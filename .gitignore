@@ -1,0 +1,137 @@
+# Ochrona danych wrażliwych
+# Pliki konfiguracyjne zawierające dane poufne, takie jak hasła czy klucze API
+appsettings.Development.json
+appsettings.Local.json
+secrets.json
+*.Secrets.json
+
+# Systemowe pliki tymczasowe
+.DS_Store
+Thumbs.db
+ehthumbs.db
+*[Tt]humbs.db
+*.DS_Store
+
+# Pliki użytkownika i konfiguracji IDE
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+.vs/
+*.vs/
+*.vscode/
+*.idea/
+*.Rider/
+*.CodeSettings
+*.DotSettings.user
+
+# Pliki generowane przez Visual Studio
+*.cache
+*.ide
+*.sln.ide
+
+# Katalogi binarne i obiektowe (kompilacja)
+**/bin/
+**/obj/
+**/out/
+
+# Pliki publikacji
+**/publish/
+**/wwwroot/dist/
+**/wwwroot/build/
+**/wwwroot/node_modules/
+node_modules/
+
+# Pliki tymczasowe Blazor/WebAssembly
+**/wwwroot/css/app.css
+**/wwwroot/css/app.css.map
+**/wwwroot/js/app.js
+**/wwwroot/js/app.js.map
+
+# Pliki pakietów NuGet
+packages/
+*.nupkg
+*.snupkg
+*.nuspec
+.nuget/
+
+# Pliki lock dla pakietów
+project.lock.json
+project.assets.json
+packages.lock.json
+package-lock.json
+yarn.lock
+
+# Pliki generowane przez NCrunch
+*.ncrunch*
+NCrunchTemp_*
+
+# Pliki logów
+*.log
+logs/
+
+# Pliki tymczasowe narzędzi
+*.tmp
+*.temp
+*.tmpfiles
+
+# Pliki testów i raporty
+TestResults/
+*.trx
+*.coverage
+*.coveragexml
+
+# Pliki migracji tymczasowych Entity Framework
+_Migrations/
+
+# Pliki konfiguracji systemu budowania
+*.builds
+
+# Pliki generowane przez Resharper
+_ReSharper.Caches/
+*_ReSharper*/
+*.DotSettings.user
+
+# Pliki tymczasowe edytorów tekstu
+*~
+*.swp
+*.swn
+*.bak
+
+# Pliki baz danych lokalnych
+*.mdf
+*.ldf
+*.ndf
+
+# Pliki publikacji ClickOnce
+publish/
+
+# Pliki tymczasowe Git
+.gitignore.swp
+
+# Pliki tymczasowe systemu
+[Bb]uild[Ll]og.*
+[Dd]ebug/
+[Rr]elease/
+Ankh.NoLoad
+
+# Pliki konfiguracji MSBuild
+*.pidb
+*.svclog
+*.scc
+
+# Pliki tymczasowe innych narzędzi
+*.gpState
+[Bb]in/
+[Oo]bj/
+
+# Pliki tymczasowe z bazy danych
+sql
+*.sql
+*.bak
+*.db
+
+# Pliki generowane przez macOS
+*.AppleDouble
+.Spotlight-V100
+.Trashes
