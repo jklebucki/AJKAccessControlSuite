@@ -1,9 +1,9 @@
 # AJKAccessControlSuite
 
 [![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](https://github.com/yourusername/AJKAccessControlSuite/releases)
-[![.NET 7](https://img.shields.io/badge/.NET-7.0-blue.svg)](https://dotnet.microsoft.com/en-us/download/dotnet/7.0)
-[![Blazor WebAssembly](https://img.shields.io/badge/Blazor-WebAssembly-7.0-blueviolet.svg)](https://dotnet.microsoft.com/en-us/apps/aspnet/web-apps/blazor)
-[![Entity Framework Core](https://img.shields.io/badge/EF%20Core-7.0-green.svg)](https://docs.microsoft.com/en-us/ef/core/)
+[![.NET 8](https://img.shields.io/badge/.NET-8.0-blue.svg)](https://dotnet.microsoft.com/en-us/download/dotnet/8.0)
+[![Blazor WebAssembly](https://img.shields.io/badge/Blazor%20WebAssembly-8.0-blueviolet.svg)](https://dotnet.microsoft.com/en-us/apps/aspnet/web-apps/blazor)
+[![Entity Framework Core](https://img.shields.io/badge/EF%20Core-8.0-green.svg)](https://learn.microsoft.com/en-us/ef/core/)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-13+-blue.svg)](https://www.postgresql.org/)
 
 ## Description
@@ -13,7 +13,7 @@
 ### Components:
 
 - **AJKAccessGuard**: A user-friendly Blazor WebAssembly application providing a web-based UI for monitoring and controlling access points.
-- **AJKAccessControlAPI**: A robust .NET 7 Web API backend that handles data processing and storage.
+- **AJKAccessControlAPI**: A robust .NET 8 Web API backend that handles data processing and storage.
 
 ## Features
 
@@ -25,7 +25,7 @@
 
 ## Technologies Used
 
-- **.NET 7**
+- **.NET 8**
 - **Blazor WebAssembly**
 - **Entity Framework Core**
 - **PostgreSQL**
@@ -38,7 +38,7 @@ Follow these instructions to get a copy of the project up and running on your lo
 
 ### Prerequisites
 
-- [.NET 7 SDK](https://dotnet.microsoft.com/download/dotnet/7.0)
+- [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0)
 - [Node.js (optional for frontend dependencies)](https://nodejs.org/)
 - [PostgreSQL 13+](https://www.postgresql.org/download/)
 - [Docker (optional)](https://www.docker.com/get-started)
