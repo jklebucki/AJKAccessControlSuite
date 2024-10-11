@@ -1,6 +1,6 @@
 # AJKAccessControlSuite
 
-[![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](https://github.com/yourusername/AJKAccessControlSuite/releases)
+[![Version](https://img.shields.io/badge/version-dev-blue.svg)](https://github.com/yourusername/AJKAccessControlSuite/releases)
 [![.NET 8](https://img.shields.io/badge/.NET-8.0-blue.svg)](https://dotnet.microsoft.com/en-us/download/dotnet/8.0)
 [![Blazor WebAssembly](https://img.shields.io/badge/Blazor%20WebAssembly-8.0-blueviolet.svg)](https://dotnet.microsoft.com/en-us/apps/aspnet/web-apps/blazor)
 [![Entity Framework Core](https://img.shields.io/badge/EF%20Core-8.0-green.svg)](https://learn.microsoft.com/en-us/ef/core/)
