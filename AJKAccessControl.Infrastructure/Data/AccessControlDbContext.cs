@@ -1,6 +1,5 @@
 
 using AJKAccessControl.Domain.Entities;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace AJKAccessControl.Infrastructure.Data

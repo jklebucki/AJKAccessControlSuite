@@ -1,13 +1,13 @@
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
 using AJKAccessControl.Application.Services;
+using AJKAccessControl.Domain.Entities;
 using AJKAccessControl.Infrastructure.Data;
 using AJKAccessControl.Infrastructure.Repositories;
 using AJKAccessControl.Shared.Configurations;
-using AJKAccessControl.Domain.Entities;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
