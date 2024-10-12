@@ -1,1 +1,5 @@
-public enum EntitityType { Employee, Vehicle }
+public enum EntitityType
+{
+    Employee,
+    Vehicle
+}
