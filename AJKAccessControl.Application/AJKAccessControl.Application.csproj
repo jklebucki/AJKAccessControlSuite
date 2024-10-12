@@ -2,6 +2,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\AJKAccessControl.Domain\AJKAccessControl.Domain.csproj" />
+    <ProjectReference Include="..\AJKAccessControl.Infrastructure\AJKAccessControl.Infrastructure.csproj" />
   </ItemGroup>
 
   <PropertyGroup>

@@ -1,5 +1,6 @@
 
 using AJKAccessControl.Domain.Entities;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace AJKAccessControl.Infrastructure.Data
@@ -14,6 +15,7 @@ namespace AJKAccessControl.Infrastructure.Data
         public DbSet<Employee> Employees { get; set; }
         public DbSet<Vehicle> Vehicles { get; set; }
         public DbSet<AccessEntry> AccessEntries { get; set; }
+        public DbSet<User> Users { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
