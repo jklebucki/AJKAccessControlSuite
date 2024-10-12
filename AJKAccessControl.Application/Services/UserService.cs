@@ -25,6 +25,7 @@ namespace AJKAccessControl.Application.Services
             var user = new User
             {
                 UserName = registerDto.Email,
+                PhoneNumber = registerDto.PhoneNumber,
                 Email = registerDto.Email,
                 FirstName = registerDto.FirstName,
                 LastName = registerDto.LastName
