@@ -1,16 +1,13 @@
 using AJKAccessControl.Domain.Entities;
-using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace AJKAccessControl.Infrastructure.Repositories
 {
     public interface IUserRepository
     {
-        Task<User> GetUserByIdAsync(string userId);
-        Task<IEnumerable<User>> GetAllUsersAsync();
-        Task AddUserAsync(User user);
-        Task UpdateUserAsync(User user);
-        Task DeleteUserAsync(string userId);
+        Task<User> GetUserByEmailAsync(string email);
+        Task<bool> CreateUserAsync(User user, string password);
+        Task<bool> DeleteUserAsync(User user);
+        Task<bool> CheckPasswordAsync(User user, string password);
+        Task<bool> UpdateUserAsync(User user, string password);
     }
 }

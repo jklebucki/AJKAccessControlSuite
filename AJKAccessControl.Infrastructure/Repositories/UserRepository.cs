@@ -1,50 +1,75 @@
 using AJKAccessControl.Domain.Entities;
-using AJKAccessControl.Infrastructure.Data;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace AJKAccessControl.Infrastructure.Repositories
 {
-    public class UserRepository: IUserRepository
+    public class UserRepository : IUserRepository
     {
-        private readonly AccessControlDbContext _context;
+        private readonly UserManager<User> _userManager;
 
-        public UserRepository(AccessControlDbContext context)
+        public UserRepository(UserManager<User> userManager)
         {
-            _context = context;
+            _userManager = userManager;
         }
 
-        public async Task<User> GetUserByIdAsync(string userId)
+        public async Task<User> GetUserByEmailAsync(string email)
         {
-            return await _context.Users.FindAsync(userId);
-        }
-
-        public async Task<IEnumerable<User>> GetAllUsersAsync()
-        {
-            return await _context.Users.ToListAsync();
-        }
-
-        public async Task AddUserAsync(User user)
-        {
-            await _context.Users.AddAsync(user);
-            await _context.SaveChangesAsync();
-        }
-
-        public async Task UpdateUserAsync(User user)
-        {
-            _context.Users.Update(user);
-            await _context.SaveChangesAsync();
-        }
-
-        public async Task DeleteUserAsync(string userId)
-        {
-            var user = await _context.Users.FindAsync(userId);
-            if (user != null)
+            var user = await _userManager.Users.FirstOrDefaultAsync(u => u.Email == email);
+            if (user == null)
             {
-                _context.Users.Remove(user);
-                await _context.SaveChangesAsync();
+                throw new InvalidOperationException($"User with email {email} not found.");
             }
+            return user;
+        }
+
+        public async Task<bool> CreateUserAsync(User user, string password)
+        {
+            var result = await _userManager.CreateAsync(user, password);
+            return result.Succeeded;
+        }
+
+        public async Task<bool> DeleteUserAsync(User user)
+        {
+            var result = await _userManager.DeleteAsync(user);
+            return result.Succeeded;
+        }
+
+        public async Task<bool> CheckPasswordAsync(User user, string password)
+        {
+            return await _userManager.CheckPasswordAsync(user, password);
+        }
+
+        public async Task<bool> UpdateUserAsync(User user, string password)
+        {
+            if (string.IsNullOrEmpty(user.Email))
+            {
+                throw new ArgumentException("Email cannot be null or empty.", nameof(user.Email));
+            }
+
+            var existingUser = await _userManager.FindByEmailAsync(user.Email);
+            if (existingUser == null)
+            {
+                return false;
+            }
+
+            existingUser.FirstName = user.FirstName;
+            existingUser.LastName = user.LastName;
+
+            var updateResult = await _userManager.UpdateAsync(existingUser);
+            if (!updateResult.Succeeded)
+            {
+                return false;
+            }
+
+            if (!string.IsNullOrEmpty(password))
+            {
+                var token = await _userManager.GeneratePasswordResetTokenAsync(existingUser);
+                var passwordResult = await _userManager.ResetPasswordAsync(existingUser, token, password);
+                return passwordResult.Succeeded;
+            }
+
+            return true;
         }
     }
 }

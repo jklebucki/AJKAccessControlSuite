@@ -3,6 +3,12 @@
   <ItemGroup>
     <ProjectReference Include="..\AJKAccessControl.Domain\AJKAccessControl.Domain.csproj" />
     <ProjectReference Include="..\AJKAccessControl.Infrastructure\AJKAccessControl.Infrastructure.csproj" />
+    <ProjectReference Include="..\AJKAccessControl.Shared\AJKAccessControl.Shared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="8.1.2" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.1.2" />
   </ItemGroup>
 
   <PropertyGroup>

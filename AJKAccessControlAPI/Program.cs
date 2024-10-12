@@ -5,13 +5,20 @@ using System.Text;
 using AJKAccessControl.Application.Services;
 using AJKAccessControl.Infrastructure.Data;
 using AJKAccessControl.Infrastructure.Repositories;
+using AJKAccessControl.Shared.Configurations;
+using AJKAccessControl.Domain.Entities;
+using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// Register Identity services
+builder.Services.AddIdentity<User, IdentityRole<Guid>>()
+    .AddEntityFrameworkStores<AccessControlDbContext>()
+    .AddDefaultTokenProviders();
 
 // Register services and repositories
 builder.Services.AddScoped<IUserRepository, UserRepository>();
@@ -23,10 +30,12 @@ builder.Services.AddDbContext<AccessControlDbContext>(options =>
     options.UseNpgsql(connectionString));
 
 // Load JWT settings from configuration
-var jwtSettings = builder.Configuration.GetSection("Jwt");
-string key = jwtSettings["Key"]!;
-string issuer = jwtSettings["Issuer"]!;
-string audience = jwtSettings["Audience"]!;
+var jwtSettings = builder.Configuration.GetSection("Jwt").Get<JwtSettings>();
+if (jwtSettings == null)
+{
+    throw new InvalidOperationException("JWT settings are not configured properly.");
+}
+builder.Services.AddSingleton(jwtSettings);
 
 // Add JWT authentication services
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -38,9 +47,9 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateAudience = true,
             ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
-            ValidIssuer = issuer,
-            ValidAudience = audience,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key))
+            ValidIssuer = jwtSettings.Issuer,
+            ValidAudience = jwtSettings.Audience,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Key))
         };
     });
 
