@@ -10,5 +10,6 @@ namespace AJKAccessControl.Application.Services
         Task<bool> ForgotPasswordAsync(ForgotPasswordDto forgotPasswordDto);
         Task<bool> UpdateUserAsync(UpdateUserDto updateUserDto);
         Task<UserDto> GetUserAsync(string email);
+        Task<bool> AddUserToRoleAsync(AddUserToRoleDto addRoleDto);
     }
 }

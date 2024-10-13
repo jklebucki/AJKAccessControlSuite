@@ -8,7 +8,7 @@ namespace AJKAccessControl.Domain.Entities
         public string LastName { get; set; } = string.Empty;
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
-
+        public IList<string?> Roles { get; set; } = [];
         public User()
         {
             Id = Guid.NewGuid();

@@ -9,5 +9,6 @@ namespace AJKAccessControl.Infrastructure.Repositories
         Task<bool> DeleteUserAsync(User user);
         Task<bool> CheckPasswordAsync(User user, string password);
         Task<bool> UpdateUserAsync(User user, string password);
+        Task<bool> AddUserToRoleAsync(string email, string role);
     }
 }

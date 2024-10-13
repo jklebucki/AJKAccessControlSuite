@@ -20,6 +20,11 @@ namespace AJKAccessControl.Infrastructure.Repositories
             {
                 return new User();
             }
+            var roles = await _userManager.GetRolesAsync(user);
+            if (roles != null)
+            {
+                user.Roles = [.. roles];
+            }
             return user;
         }
 
@@ -70,6 +75,15 @@ namespace AJKAccessControl.Infrastructure.Repositories
             }
 
             return true;
+        }
+
+        public async Task<bool> AddUserToRoleAsync(string email, string role)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null)
+                return false;
+            var result = await _userManager.AddToRoleAsync(user, role);
+            return result.Succeeded;
         }
     }
 }

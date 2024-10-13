@@ -44,13 +44,21 @@ namespace AJKAccessControl.Application.Services
 
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_jwtSettings.Key);
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.Email, user.Email ?? string.Empty)
+            };
+
+            foreach (var role in user.Roles)
+            {
+                if (!string.IsNullOrEmpty(role))
+                    claims.Add(new Claim(ClaimTypes.Role, role));
+            }
+
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Subject = new ClaimsIdentity(
-                [
-                    new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                    new Claim(ClaimTypes.Email, user.Email ?? string.Empty)
-                ]),
+                Subject = new ClaimsIdentity(claims),
                 Expires = DateTime.UtcNow.AddDays(7),
                 Issuer = _jwtSettings.Issuer,
                 Audience = _jwtSettings.Audience,
@@ -106,6 +114,12 @@ namespace AJKAccessControl.Application.Services
                 CreatedAt = user.CreatedAt,
                 UpdatedAt = user.UpdatedAt
             };
+        }
+
+        public Task<bool> AddUserToRoleAsync(AddUserToRoleDto addRoleDto)
+        {
+            return _userRepository.AddUserToRoleAsync(addRoleDto.Email, addRoleDto.Role);
+
         }
     }
 }
