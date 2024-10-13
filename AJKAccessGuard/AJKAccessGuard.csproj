@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\AJKAccessControl.Shared\AJKAccessControl.Shared.csproj" />
+    <ProjectReference Include="..\AJKAccessControl.Domain\AJKAccessControl.Domain.csproj" />
   </ItemGroup>
 
 </Project>

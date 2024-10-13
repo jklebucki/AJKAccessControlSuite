@@ -1,0 +1,73 @@
+﻿@page "/entries"
+@using AJKAccessControl.Domain.Entities
+
+<PageTitle>Entries</PageTitle>
+
+<h1>Rejestracja zdarzeń</h1>
+
+@* <EditForm Model="newEntry" OnSubmit="RegisterEntry">
+
+    <div class="form-group">
+        <label for="entityType">Entity Type</label>
+        <InputSelect id="entityType" @bind-Value="newEntry.EntityType">
+            <option value="">Select Entity Type</option>
+            <option value="vehicle">Vehicle</option>
+            <option value="employee">Employee</option>
+        </InputSelect>
+    </div>
+
+    <div class="form-group">
+        <label for="entityId">Entity ID</label>
+        <InputText id="entityId" @bind-Value="newEntry.EntityId" class="form-control" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Register Entry</button>
+</EditForm> *@
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Entity Type</th>
+            <th>Entity ID</th>
+            <th>Entry Time</th>
+            <th>Exit Time</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var entry in accessEntries)
+        {
+            <tr>
+                <td>@entry.EntityType.ToString()</td>
+                <td>@entry.EntityId</td>
+                <td>@entry.EntryTime</td>
+                <td>@entry.ExitTime</td>
+                <td>
+                    @if (entry.ExitTime == null)
+                    {
+                        <button class="btn btn-secondary" @onclick="async () => RegisterExit(entry)">Register Exit</button>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+    private List<AccessEntry> accessEntries = new List<AccessEntry>();
+
+    private AccessEntry newEntry = new AccessEntry();
+
+    private void RegisterEntry()
+    {
+        newEntry.EntryTime = DateTime.UtcNow;
+        accessEntries.Add(newEntry);
+        newEntry = new AccessEntry();
+    }
+
+    private async Task RegisterExit(AccessEntry entry)
+    {
+        entry.ExitTime = DateTime.UtcNow;
+        await Task.CompletedTask;
+    }
+}
