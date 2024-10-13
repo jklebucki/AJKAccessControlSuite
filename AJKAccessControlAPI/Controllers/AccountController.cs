@@ -1,5 +1,6 @@
 using AJKAccessControl.Application.Services;
 using AJKAccessControl.Shared.DTOs;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AJKAccessControlAPI.Controllers
@@ -13,6 +14,18 @@ namespace AJKAccessControlAPI.Controllers
         public AccountController(IUserService userService)
         {
             _userService = userService;
+        }
+
+        [HttpGet("get-user/{email}")]
+        [Authorize]
+        public async Task<IActionResult> GetUser(string email)
+        {
+            var user = await _userService.GetUserAsync(email);
+            if (user == null || user.Email != email)
+            {
+                return NotFound("User not found.");
+            }
+            return Ok(user);
         }
 
         [HttpPost("register")]
@@ -31,7 +44,7 @@ namespace AJKAccessControlAPI.Controllers
         public async Task<IActionResult> Login(LoginDto loginDto)
         {
             var token = await _userService.LoginUserAsync(loginDto);
-            if (token == null)
+            if (token == null || token == string.Empty)
             {
                 return Unauthorized("Invalid credentials.");
             }

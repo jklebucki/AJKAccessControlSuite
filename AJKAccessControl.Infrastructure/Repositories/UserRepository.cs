@@ -18,7 +18,7 @@ namespace AJKAccessControl.Infrastructure.Repositories
             var user = await _userManager.Users.FirstOrDefaultAsync(u => u.Email == email);
             if (user == null)
             {
-                throw new InvalidOperationException($"User with email {email} not found.");
+                return new User();
             }
             return user;
         }

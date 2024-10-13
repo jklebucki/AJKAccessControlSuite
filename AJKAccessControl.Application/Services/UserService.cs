@@ -85,5 +85,25 @@ namespace AJKAccessControl.Application.Services
 
             return await _userRepository.UpdateUserAsync(user, updateUserDto.Password);
         }
+
+        public async Task<UserDto> GetUserAsync(string email)
+        {
+            var user = await _userRepository.GetUserByEmailAsync(email);
+            if (user == null)
+            {
+                return new UserDto();
+            }
+
+            return new UserDto
+            {
+                UserName = user.UserName ?? string.Empty,
+                Email = user.Email ?? string.Empty,
+                PhoneNumber = user.PhoneNumber ?? string.Empty,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                CreatedAt = user.CreatedAt,
+                UpdatedAt = user.UpdatedAt
+            };
+        }
     }
 }
