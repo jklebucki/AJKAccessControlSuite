@@ -3,12 +3,10 @@ using AJKAccessControl.Domain.Entities;
 using AJKAccessControl.Infrastructure.Data;
 using AJKAccessControl.Infrastructure.Repositories;
 using AJKAccessControl.Shared.Configurations;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+using AJKAccessControlAPI.Middleware;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -68,38 +66,29 @@ if (jwtSettings == null)
 }
 builder.Services.AddSingleton(jwtSettings);
 
-// Add JWT authentication services
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
-    {
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuer = true,
-            ValidateAudience = true,
-            ValidateLifetime = true,
-            ValidateIssuerSigningKey = true,
-            ValidIssuer = jwtSettings.Issuer,
-            ValidAudience = jwtSettings.Audience,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Key))
-        };
-    });
+// Add JWT authentication services using the new JwtConfiguration class
+builder.Services.AddJwtAuthentication(builder.Configuration);
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-
+    app.UseDeveloperExceptionPage();
 }
 
 app.UseSwagger();
 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "AJKAccessControlAPI v1"));
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 
-app.UseAuthentication();
-app.UseAuthorization();
-
-app.MapControllers();
+app.UseRouting()
+    .UseMiddleware<RequestLoggingMiddleware>()
+    .UseAuthentication()
+    .UseAuthorization()
+    .UseEndpoints(endpoints =>
+    {
+        endpoints.MapControllers();
+    });
 
 app.Run();

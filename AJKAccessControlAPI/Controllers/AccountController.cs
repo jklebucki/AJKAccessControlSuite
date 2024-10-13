@@ -77,6 +77,7 @@ namespace AJKAccessControlAPI.Controllers
         }
 
         [HttpPut("update")]
+        [Authorize]
         public async Task<IActionResult> Update(UpdateUserDto updateUserDto)
         {
             var result = await _userService.UpdateUserAsync(updateUserDto);
