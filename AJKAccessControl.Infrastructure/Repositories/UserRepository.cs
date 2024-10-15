@@ -85,5 +85,10 @@ namespace AJKAccessControl.Infrastructure.Repositories
             var result = await _userManager.AddToRoleAsync(user, role);
             return result.Succeeded;
         }
+
+        public async Task<IEnumerable<User>> GetUsersAsync()
+        {
+            return await _userManager.Users.ToListAsync();
+        }
     }
 }

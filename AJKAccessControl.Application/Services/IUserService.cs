@@ -11,5 +11,6 @@ namespace AJKAccessControl.Application.Services
         Task<bool> UpdateUserAsync(UpdateUserDto updateUserDto);
         Task<UserDto> GetUserAsync(string email);
         Task<bool> AddUserToRoleAsync(AddUserToRoleDto addRoleDto);
+        Task<IEnumerable<UserDto>> GetUsersAsync();
     }
 }

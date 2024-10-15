@@ -116,10 +116,26 @@ namespace AJKAccessControl.Application.Services
             };
         }
 
-        public Task<bool> AddUserToRoleAsync(AddUserToRoleDto addRoleDto)
+        public async Task<bool> AddUserToRoleAsync(AddUserToRoleDto addRoleDto)
         {
-            return _userRepository.AddUserToRoleAsync(addRoleDto.Email, addRoleDto.Role);
+            return await _userRepository.AddUserToRoleAsync(addRoleDto.Email, addRoleDto.Role);
 
+        }
+
+        public async Task<IEnumerable<UserDto>> GetUsersAsync()
+        {
+            var users = await _userRepository.GetUsersAsync();
+            return users.Select(user => new UserDto
+            {
+                UserName = user.UserName ?? string.Empty,
+                Email = user.Email ?? string.Empty,
+                PhoneNumber = user.PhoneNumber ?? string.Empty,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                CreatedAt = user.CreatedAt,
+                UpdatedAt = user.UpdatedAt
+            }); 
+        
         }
     }
 }

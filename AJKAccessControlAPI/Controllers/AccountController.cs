@@ -28,6 +28,18 @@ namespace AJKAccessControlAPI.Controllers
             return Ok(user);
         }
 
+        [HttpGet("get-users")]
+        [Authorize]
+        public async Task<IActionResult> GetUsers()
+        {
+            var user = await _userService.GetUsersAsync();
+            if (user == null)
+            {
+                return NotFound("No users found.");
+            }
+            return Ok(user);
+        }
+
         [HttpPost("register")]
         public async Task<IActionResult> Register(RegisterDto registerDto)
         {
