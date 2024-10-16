@@ -2,6 +2,8 @@
 @using AJKAccessControl.Shared.DTOs
 @using AJKAccessGuard.Services
 @inject IUsersApiService api
+@inject IUserStorageService userStorage
+@inject NavigationManager NavigationManager
 
 <PageTitle>UserManagement</PageTitle>
 
@@ -46,12 +48,13 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        var login = new LoginDto
+        var token = await userStorage.GetTokenAsync();
+        if (string.IsNullOrEmpty(token))
         {
-            Email = "j.klebucki@ajksoftware.pl",
-            Password = "Password2022!"
-        };
-        var token = await api.LoginUserAsync(login);
-        users = (await api.GetAllUsersAsync(token)).ToList();
+            NavigationManager.NavigateTo("/signin");
+        } else
+        {
+            users = (await api.GetAllUsersAsync(token)).ToList();
+        }
     }
 }

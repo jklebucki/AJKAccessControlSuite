@@ -5,27 +5,27 @@
 
 <h1>Rejestracja zdarzeń</h1>
 
-@* <EditForm Model="newEntry" OnSubmit="RegisterEntry">
+<EditForm Model="newEntry" OnSubmit="RegisterEntry" class="mb-4 p-4 border rounded shadow-sm bg-light">
 
-    <div class="form-group">
-        <label for="entityType">Entity Type</label>
-        <InputSelect id="entityType" @bind-Value="newEntry.EntityType">
+    <div class="form-group mb-3">
+        <label for="entityType" class="form-label">Entity Type</label>
+        <InputSelect id="entityType" @bind-Value="newEntry.EntityType" class="form-select">
             <option value="">Select Entity Type</option>
             <option value="vehicle">Vehicle</option>
             <option value="employee">Employee</option>
         </InputSelect>
     </div>
 
-    <div class="form-group">
-        <label for="entityId">Entity ID</label>
-        <InputText id="entityId" @bind-Value="newEntry.EntityId" class="form-control" />
+    <div class="form-group mb-3">
+        <label for="entityId" class="form-label">Entity ID</label>
+        <InputNumber id="entityId" @bind-Value="newEntry.EntityId" class="form-control" />
     </div>
 
     <button type="submit" class="btn btn-primary">Register Entry</button>
-</EditForm> *@
+</EditForm>
 
-<table class="table">
-    <thead>
+<table class="table table-striped table-hover shadow-sm">
+    <thead class="table-dark">
         <tr>
             <th>Entity Type</th>
             <th>Entity ID</th>
@@ -45,7 +45,7 @@
                 <td>
                     @if (entry.ExitTime == null)
                     {
-                        <button class="btn btn-secondary" @onclick="async () => RegisterExit(entry)">Register Exit</button>
+                        <button class="btn btn-secondary" @onclick="async () => await RegisterExit(entry)">Register Exit</button>
                     }
                 </td>
             </tr>
