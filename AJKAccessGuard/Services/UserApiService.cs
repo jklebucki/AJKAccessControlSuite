@@ -15,8 +15,10 @@ namespace AJKAccessGuard.Services
             _httpClient = httpClient;
         }
 
-        public async Task<UserDto> GetUserAsync(string email)
+        public async Task<UserDto> GetUserAsync(string email, string token)
         {
+            _httpClient.DefaultRequestHeaders.Clear();
+            _httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
             var user = await _httpClient.GetFromJsonAsync<UserDto>($"api/account/get-user/{email}");
             if (user == null)
             {
@@ -27,6 +29,8 @@ namespace AJKAccessGuard.Services
 
         public async Task<IEnumerable<UserDto>> GetAllUsersAsync(string token)
         {
+            _httpClient.DefaultRequestHeaders.Clear();
+            _httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
             var users = await _httpClient.GetFromJsonAsync<IEnumerable<UserDto>>("api/account/get-users");
             return users ?? [];
         }
@@ -58,7 +62,8 @@ namespace AJKAccessGuard.Services
             {
                 var response = await _httpClient.PostAsJsonAsync("api/Account/login", loginDto);
                 response.EnsureSuccessStatusCode();
-                return await response.Content.ReadAsStringAsync();
+                var data = await response.Content.ReadFromJsonAsync<LoginResponseDto>();
+                return data!.Token;
             }
             catch (HttpRequestException ex)
             {

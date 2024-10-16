@@ -1,5 +1,7 @@
 using AJKAccessGuard;
+using AJKAccessGuard.Providers;
 using AJKAccessGuard.Services;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 
@@ -13,5 +15,8 @@ builder.Services.AddScoped(sp => new HttpClient
 });
 
 builder.Services.AddScoped<IUsersApiService, UserApiService>();
+builder.Services.AddScoped<IUserStorageService, UserStorageService>();
+builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
+builder.Services.AddAuthorizationCore();
 
 await builder.Build().RunAsync();

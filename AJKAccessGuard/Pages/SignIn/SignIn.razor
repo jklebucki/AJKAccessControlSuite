@@ -1,0 +1,55 @@
+@page "/signin"
+@using AJKAccessControl.Shared.DTOs
+@using AJKAccessGuard.Providers
+@using AJKAccessGuard.Services
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Components.Forms
+@using System.ComponentModel.DataAnnotations
+@inject IUsersApiService UserApiService
+@inject IUserStorageService UserStorageService
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager Navigation
+
+
+<EditForm Model="@loginModel" OnValidSubmit="@HandleLogin">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="signin-container">
+        <h2>Zaloguj się</h2>
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <InputText id="email" class="form-control" @bind-Value="loginModel.Email" />
+            <ValidationMessage For="@(() => loginModel.Email)" />
+        </div>
+        <div class="form-group">
+            <label for="password">Hasło:</label>
+            <InputText id="password" type="password" class="form-control" @bind-Value="loginModel.Password" />
+            <ValidationMessage For="@(() => loginModel.Password)" />
+        </div>
+        <button type="submit" class="btn btn-primary">Zaloguj</button>
+    </div>
+</EditForm>
+
+@code {
+    private LoginDto loginModel = new LoginDto();
+
+    private async Task HandleLogin()
+    {
+        try
+        {
+            var token = await UserApiService.LoginUserAsync(loginModel);
+            var user = await UserApiService.GetUserAsync(loginModel.Email,token);
+            await UserStorageService.StoreTokenAsync(token);
+            await UserStorageService.StoreUserAsync(user);
+            var authProvider = AuthenticationStateProvider as CustomAuthenticationStateProvider;
+            await authProvider!.NotifyUserAuthenticationAsync(token);
+            Navigation.NavigateTo("/");
+        }
+        catch (Exception ex)
+        {
+            // Handle login failure (e.g., show error message)
+            Console.WriteLine($"Login failed: {ex.Message}");
+        }
+    }
+}
