@@ -82,7 +82,7 @@ namespace AJKAccessControl.Application.Services
         public async Task<bool> ForgotPasswordAsync(ForgotPasswordDto forgotPasswordDto)
         {
             // Implement logic for password reset
-            return true;
+            return await Task.FromResult(true);
         }
 
         public async Task<bool> UpdateUserAsync(UpdateUserDto updateUserDto)
