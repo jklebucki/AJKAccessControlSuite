@@ -1,4 +1,7 @@
 @page "/app-users"
+@using AJKAccessControl.Shared.DTOs
+@using AJKAccessGuard.Services
+@inject IUsersApiService api
 
 <PageTitle>UserManagement</PageTitle>
 
@@ -6,4 +9,20 @@
     <h1 class="title-box">
         Zarządzanie użytkownikami
     </h1>
-</div>
+</div> 
+
+
+@code {
+    private List<UserDto> users = new List<UserDto>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var login = new LoginDto
+        {
+            Email = "j.klebucki@ajksoftware.pl",
+            Password = "Password2022!"
+        };
+        var token = await api.LoginUserAsync(login);
+        users = (await api.GetAllUsersAsync(token)).ToList();
+    }
+}

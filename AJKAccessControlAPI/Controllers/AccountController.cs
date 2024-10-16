@@ -88,9 +88,9 @@ namespace AJKAccessControlAPI.Controllers
             return Ok("Password reset email sent.");
         }
 
-        [HttpPut("update")]
+        [HttpPut("update/{email}")]
         [Authorize]
-        public async Task<IActionResult> Update(UpdateUserDto updateUserDto)
+        public async Task<IActionResult> Update(string email, UpdateUserDto updateUserDto)
         {
             var result = await _userService.UpdateUserAsync(updateUserDto);
             if (!result)
