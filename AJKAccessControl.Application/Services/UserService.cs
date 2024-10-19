@@ -27,12 +27,12 @@ namespace AJKAccessControl.Application.Services
             {
                 UserName = registerDto.UserName,
                 PhoneNumber = registerDto.PhoneNumber,
-                Email = registerDto.Email,
+                Email = registerDto.Email!,
                 FirstName = registerDto.FirstName,
                 LastName = registerDto.LastName
             };
 
-            return await _userRepository.CreateUserAsync(user, registerDto.Password);
+            return await _userRepository.CreateUserAsync(user, registerDto.Password, registerDto.Role);
         }
 
         public async Task<OperationResult<string>> LoginUserAsync(LoginDto loginDto)

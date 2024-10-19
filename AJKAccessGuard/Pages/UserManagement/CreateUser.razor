@@ -90,6 +90,17 @@
             <ValidationMessage For="@(() => newUser.LastName)" />
         </div>
 
+        <div class="form-group">
+            <label for="role">Rola:</label>
+            <InputSelect id="role" @bind-Value="newUser.Role" class="form-select modern-input">
+                <option value="">Wybierz rolę</option>
+                <option value="Admin">Admin</option>
+                <option value="Supervisor">Supervisor</option>
+                <option value="User">User</option>
+            </InputSelect>
+            <ValidationMessage For="@(() => newUser.Role)" />
+        </div>
+
         <div class="form-group d-flex justify-content-between mt-3">
             <button type="submit" class="btn btn-outline-primary btn-form">Dodaj</button>
             <button type="button" class="btn btn-outline-secondary btn-form" @onclick="OnClose">Anuluj</button>

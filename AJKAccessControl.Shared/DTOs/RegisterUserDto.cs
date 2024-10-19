@@ -32,5 +32,8 @@ namespace AJKAccessControl.Shared.DTOs
 
         [Required(ErrorMessage = "Nazwisko jest wymagane")]
         public string LastName { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Rola jest wymagana")]
+        public string Role { get; set; } = string.Empty;
     }
 }

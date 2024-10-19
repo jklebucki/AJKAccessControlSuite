@@ -29,9 +29,13 @@ namespace AJKAccessControl.Infrastructure.Repositories
             return user;
         }
 
-        public async Task<OperationResult<string>> CreateUserAsync(User user, string password)
+        public async Task<OperationResult<string>> CreateUserAsync(User user, string password, string role)
         {
             var result = await _userManager.CreateAsync(user, password);
+            if (result.Succeeded)
+            {
+                await _userManager.AddToRoleAsync(user, role);
+            }
             return new OperationResult<string>
             {
                 Succeeded = result.Succeeded,
