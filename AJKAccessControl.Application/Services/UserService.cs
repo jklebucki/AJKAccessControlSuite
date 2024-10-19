@@ -25,7 +25,7 @@ namespace AJKAccessControl.Application.Services
         {
             var user = new User
             {
-                UserName = registerDto.Email,
+                UserName = registerDto.UserName,
                 PhoneNumber = registerDto.PhoneNumber,
                 Email = registerDto.Email,
                 FirstName = registerDto.FirstName,
@@ -37,7 +37,7 @@ namespace AJKAccessControl.Application.Services
 
         public async Task<OperationResult<string>> LoginUserAsync(LoginDto loginDto)
         {
-            var user = await _userRepository.GetUserByEmailAsync(loginDto.Email);
+            var user = await _userRepository.GetUserByUserNamelAsync(loginDto.UserName);
             if (user == null || !(await _userRepository.CheckPasswordAsync(user, loginDto.Password)).Succeeded)
             {
                 return new OperationResult<string> { Succeeded = false, Errors = new List<string> { "Invalid login attempt" } };
@@ -75,7 +75,7 @@ namespace AJKAccessControl.Application.Services
 
         public async Task<OperationResult<string>> DeleteUserAsync(DeleteUserDto deleteUserDto)
         {
-            var user = await _userRepository.GetUserByEmailAsync(deleteUserDto.Email);
+            var user = await _userRepository.GetUserByUserNamelAsync(deleteUserDto.UserName);
             if (user == null)
             {
                 return new OperationResult<string> { Succeeded = false, Errors = new List<string> { "User not found" } };
@@ -102,9 +102,9 @@ namespace AJKAccessControl.Application.Services
             return await _userRepository.UpdateUserAsync(user, updateUserDto.Password);
         }
 
-        public async Task<UserDto> GetUserAsync(string email)
+        public async Task<UserDto> GetUserAsync(string userName)
         {
-            var user = await _userRepository.GetUserByEmailAsync(email);
+            var user = await _userRepository.GetUserByUserNamelAsync(userName);
             if (user == null)
             {
                 return new UserDto();
@@ -124,7 +124,7 @@ namespace AJKAccessControl.Application.Services
 
         public async Task<OperationResult<string>> AddUserToRoleAsync(AddUserToRoleDto addRoleDto)
         {
-            return await _userRepository.AddUserToRoleAsync(addRoleDto.Email, addRoleDto.Role);
+            return await _userRepository.AddUserToRoleAsync(addRoleDto.UserName, addRoleDto.Role);
 
         }
 

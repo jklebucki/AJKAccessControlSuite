@@ -45,7 +45,11 @@ builder.Services.AddSwaggerGen(c =>
 
 
 // Register Identity services
-builder.Services.AddIdentity<User, IdentityRole<Guid>>()
+builder.Services.AddIdentity<User, IdentityRole<Guid>>(options =>
+    {
+        options.User.AllowedUserNameCharacters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        options.User.RequireUniqueEmail = false;
+    })
     .AddEntityFrameworkStores<AccessControlDbContext>()
     .AddDefaultTokenProviders();
 

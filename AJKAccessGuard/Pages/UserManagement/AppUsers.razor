@@ -15,26 +15,35 @@
 @switch (windowMode)
 {
     case "list":
-        <UsersList Users="users" AddUser="AddUser" />
+        <UsersList Users="users" AddUser="OpenCrateUserComponent" />
         break;
     case "add":
-        <CreateUser Cancel="Cancel"/>
+        <CreateUser Close="CloseCreateUserComponent"/>
         break;
 }
 
 @code {
     private List<UserDto> users = new List<UserDto>();
     private string windowMode = "list";
-    private void AddUser()
+    private void OpenCrateUserComponent()
     {
         windowMode = "add";
     }
-    private void Cancel()
+    private async Task CloseCreateUserComponent(bool isSaved)
     {
         windowMode = "list";
+        if (isSaved)
+        {
+            await GetUserList();
+        }
     }
     
     protected override async Task OnInitializedAsync()
+    {
+        await GetUserList();
+    }
+
+    private async Task GetUserList()
     {
         var token = await userStorage.GetTokenAsync();
         if (string.IsNullOrEmpty(token))
@@ -43,7 +52,7 @@
         }
         else
         {
-            users = (await api.GetAllUsersAsync(token)).ToList();
+            users = (await api.GetAllUsersAsync(token)).Data!.ToList();
         }
     }
 }

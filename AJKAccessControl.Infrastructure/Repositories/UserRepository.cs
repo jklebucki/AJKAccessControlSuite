@@ -14,9 +14,9 @@ namespace AJKAccessControl.Infrastructure.Repositories
             _userManager = userManager;
         }
 
-        public async Task<User> GetUserByEmailAsync(string email)
+        public async Task<User> GetUserByUserNamelAsync(string userName)
         {
-            var user = await _userManager.Users.FirstOrDefaultAsync(u => u.Email == email);
+            var user = await _userManager.Users.FirstOrDefaultAsync(u => u.UserName == userName);
             if (user == null)
             {
                 return new User();
@@ -61,12 +61,12 @@ namespace AJKAccessControl.Infrastructure.Repositories
 
         public async Task<OperationResult<string>> UpdateUserAsync(User user, string password)
         {
-            if (string.IsNullOrEmpty(user.Email))
+            if (string.IsNullOrEmpty(user.UserName))
             {
-                throw new ArgumentException("Email cannot be null or empty.", nameof(user.Email));
+                throw new ArgumentException("Username cannot be null or empty.", nameof(user.UserName));
             }
 
-            var existingUser = await _userManager.FindByEmailAsync(user.Email);
+            var existingUser = await _userManager.FindByNameAsync(user.UserName);
             if (existingUser == null)
             {
                 return new OperationResult<string>
@@ -78,6 +78,7 @@ namespace AJKAccessControl.Infrastructure.Repositories
 
             existingUser.FirstName = user.FirstName;
             existingUser.LastName = user.LastName;
+            existingUser.Email = user.Email;
 
             var updateResult = await _userManager.UpdateAsync(existingUser);
             if (!updateResult.Succeeded)
@@ -107,9 +108,9 @@ namespace AJKAccessControl.Infrastructure.Repositories
             };
         }
 
-        public async Task<OperationResult<string>> AddUserToRoleAsync(string email, string role)
+        public async Task<OperationResult<string>> AddUserToRoleAsync(string userName, string role)
         {
-            var user = await _userManager.FindByEmailAsync(email);
+            var user = await _userManager.FindByNameAsync(userName);
             if (user == null)
                 return new OperationResult<string>
                 {

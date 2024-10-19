@@ -18,9 +18,9 @@
     <div class="signin-container">
         <h2>Zaloguj się</h2>
         <div class="form-group">
-            <label for="email">Email:</label>
-            <InputText id="email" class="form-control" @bind-Value="loginModel.Email" />
-            <ValidationMessage For="@(() => loginModel.Email)" />
+            <label for="email">Nazwa użytkownika:</label>
+            <InputText id="email" class="form-control" @bind-Value="loginModel.UserName" />
+            <ValidationMessage For="@(() => loginModel.UserName)" />
         </div>
         <div class="form-group">
             <label for="password">Hasło:</label>
@@ -28,28 +28,46 @@
             <ValidationMessage For="@(() => loginModel.Password)" />
         </div>
         <button type="submit" class="btn btn-primary">Zaloguj</button>
+        @if (errors.Any())
+        {
+            <div class="alert alert-danger mt-3">
+                <ul>
+                    @foreach (var error in errors)
+                    {
+                        <li>@error</li>
+                    }
+                </ul>
+            </div>
+        }
     </div>
 </EditForm>
 
 @code {
     private LoginDto loginModel = new LoginDto();
+    private List<string> errors = new List<string>();
 
     private async Task HandleLogin()
     {
+        loginModel.UserName = loginModel.UserName.ToUpper();
         try
         {
-            var token = await UserApiService.LoginUserAsync(loginModel);
-            var user = await UserApiService.GetUserAsync(loginModel.Email,token);
-            await UserStorageService.StoreTokenAsync(token);
-            await UserStorageService.StoreUserAsync(user);
+            var tokenResult = await UserApiService.LoginUserAsync(loginModel);
+            if (!tokenResult.Succeeded)
+            {
+                errors.Add("Błąd logowania!");
+                return;
+            }
+            var userResult = await UserApiService.GetUserAsync(loginModel.UserName,tokenResult.Data!);
+            await UserStorageService.StoreTokenAsync(tokenResult.Data!);
+            await UserStorageService.StoreUserAsync(userResult.Data!);
             var authProvider = AuthenticationStateProvider as CustomAuthenticationStateProvider;
-            await authProvider!.NotifyUserAuthenticationAsync(token);
+            await authProvider!.NotifyUserAuthenticationAsync(tokenResult.Data!);
             Navigation.NavigateTo("/");
         }
         catch (Exception ex)
         {
-            // Handle login failure (e.g., show error message)
-            Console.WriteLine($"Login failed: {ex.Message}");
+            errors.Add("Błąd logowania!");
+            errors.Add(ex.InnerException == null ? ex.Message : ex.InnerException.Message);
         }
     }
 }

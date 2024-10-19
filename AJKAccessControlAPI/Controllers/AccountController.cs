@@ -16,12 +16,12 @@ namespace AJKAccessControlAPI.Controllers
             _userService = userService;
         }
 
-        [HttpGet("get-user/{email}")]
+        [HttpGet("get-user/{userName}")]
         [Authorize]
-        public async Task<IActionResult> GetUser(string email)
+        public async Task<IActionResult> GetUser(string userName)
         {
-            var user = await _userService.GetUserAsync(email);
-            if (user == null || user.Email != email)
+            var user = await _userService.GetUserAsync(userName);
+            if (user == null || user.UserName != userName)
             {
                 return NotFound("User not found.");
             }
