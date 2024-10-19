@@ -1,12 +1,15 @@
-﻿@using AJKAccessGuard.Providers
+﻿@using AJKAccessControl.Shared.DTOs
+@using AJKAccessGuard.Providers
+@using AJKAccessGuard.Services
 @using Microsoft.AspNetCore.Components.Authorization
+@inject IUserStorageService userStorage
 
 @inject NavigationManager NavigationManager
 @inject AuthenticationStateProvider AuthenticationStateProvider
 <CascadingAuthenticationState>
     <AuthorizeView>
         <Authorized>
-            Hello, @context.User.Identity?.Name!
+            Witaj, @userDto.FirstName @userDto.LastName
             <button class="nav-link btn btn-link" @onclick="BeginLogOut">Log out</button>
         </Authorized>
         <NotAuthorized>
@@ -16,9 +19,11 @@
 </CascadingAuthenticationState>
 
 @code {
+    private UserDto userDto = new UserDto();
     protected override async Task OnInitializedAsync()
     {
         AuthenticationStateProvider.AuthenticationStateChanged += OnAuthenticationStateChanged;
+        userDto = await userStorage.GetUserAsync();
         await Task.CompletedTask;
     }
 
@@ -30,6 +35,9 @@
         if (!user.Identity!.IsAuthenticated)
         {
             NavigationManager.NavigateTo("/");
+        } else
+        {
+            userDto = await userStorage.GetUserAsync();
         }
     }
 
