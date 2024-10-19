@@ -1,4 +1,5 @@
 using AJKAccessControl.Domain.Entities;
+using AJKAccessControl.Domain.Responses;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -28,24 +29,37 @@ namespace AJKAccessControl.Infrastructure.Repositories
             return user;
         }
 
-        public async Task<bool> CreateUserAsync(User user, string password)
+        public async Task<OperationResult> CreateUserAsync(User user, string password)
         {
             var result = await _userManager.CreateAsync(user, password);
-            return result.Succeeded;
+            return new OperationResult
+            {
+                Succeeded = result.Succeeded,
+                Errors = result.Errors.Select(e => e.Description).ToList()
+            };
         }
 
-        public async Task<bool> DeleteUserAsync(User user)
+        public async Task<OperationResult> DeleteUserAsync(User user)
         {
             var result = await _userManager.DeleteAsync(user);
-            return result.Succeeded;
+            return new OperationResult
+            {
+                Succeeded = result.Succeeded,
+                Errors = result.Errors.Select(e => e.Description).ToList()
+            };
         }
 
-        public async Task<bool> CheckPasswordAsync(User user, string password)
+        public async Task<OperationResult> CheckPasswordAsync(User user, string password)
         {
-            return await _userManager.CheckPasswordAsync(user, password);
+            var result = await _userManager.CheckPasswordAsync(user, password);
+            return new OperationResult
+            {
+                Succeeded = result,
+                Errors = result ? new List<string>() : new List<string> { "Password check failed" }
+            };
         }
 
-        public async Task<bool> UpdateUserAsync(User user, string password)
+        public async Task<OperationResult> UpdateUserAsync(User user, string password)
         {
             if (string.IsNullOrEmpty(user.Email))
             {
@@ -55,7 +69,11 @@ namespace AJKAccessControl.Infrastructure.Repositories
             var existingUser = await _userManager.FindByEmailAsync(user.Email);
             if (existingUser == null)
             {
-                return false;
+                return new OperationResult
+                {
+                    Succeeded = false,
+                    Errors = new List<string> { "User not found" }
+                };
             }
 
             existingUser.FirstName = user.FirstName;
@@ -64,26 +82,46 @@ namespace AJKAccessControl.Infrastructure.Repositories
             var updateResult = await _userManager.UpdateAsync(existingUser);
             if (!updateResult.Succeeded)
             {
-                return false;
+                return new OperationResult
+                {
+                    Succeeded = false,
+                    Errors = updateResult.Errors.Select(e => e.Description).ToList()
+                };
             }
 
             if (!string.IsNullOrEmpty(password))
             {
                 var token = await _userManager.GeneratePasswordResetTokenAsync(existingUser);
                 var passwordResult = await _userManager.ResetPasswordAsync(existingUser, token, password);
-                return passwordResult.Succeeded;
+                return new OperationResult
+                {
+                    Succeeded = passwordResult.Succeeded,
+                    Errors = passwordResult.Succeeded ? new List<string>() : passwordResult.Errors.Select(e => e.Description).ToList()
+                };
             }
 
-            return true;
+            return new OperationResult
+            {
+                Succeeded = true,
+                Errors = new List<string>()
+            };
         }
 
-        public async Task<bool> AddUserToRoleAsync(string email, string role)
+        public async Task<OperationResult> AddUserToRoleAsync(string email, string role)
         {
             var user = await _userManager.FindByEmailAsync(email);
             if (user == null)
-                return false;
+                return new OperationResult
+                {
+                    Succeeded = false,
+                    Errors = new List<string> { "User not found" }
+                };
             var result = await _userManager.AddToRoleAsync(user, role);
-            return result.Succeeded;
+            return new OperationResult
+            {
+                Succeeded = result.Succeeded,
+                Errors = result.Succeeded ? new List<string>() : new List<string> { "Failed to add user to role" }
+            };
         }
 
         public async Task<IEnumerable<User>> GetUsersAsync()

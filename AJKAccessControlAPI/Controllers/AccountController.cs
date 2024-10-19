@@ -44,9 +44,9 @@ namespace AJKAccessControlAPI.Controllers
         public async Task<IActionResult> Register(RegisterDto registerDto)
         {
             var result = await _userService.RegisterUserAsync(registerDto);
-            if (!result)
+            if (!result.Succeeded)
             {
-                return BadRequest("User registration failed.");
+                return BadRequest(string.Join(", ", result.Errors));
             }
 
             return Ok("User registered successfully.");
@@ -55,22 +55,22 @@ namespace AJKAccessControlAPI.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginDto loginDto)
         {
-            var token = await _userService.LoginUserAsync(loginDto);
-            if (token == null || token == string.Empty)
+            var result = await _userService.LoginUserAsync(loginDto);
+            if (result == null || result.Data == string.Empty)
             {
-                return Unauthorized("Invalid credentials.");
+                return Unauthorized(result != null ? string.Join(", ", result.Errors) : "Unauthorized access.");
             }
 
-            return Ok(new { Token = token });
+            return Ok(new { Token = result.Data });
         }
 
         [HttpPost("delete")]
         public async Task<IActionResult> Delete(DeleteUserDto deleteUserDto)
         {
             var result = await _userService.DeleteUserAsync(deleteUserDto);
-            if (!result)
+            if (!result.Succeeded)
             {
-                return BadRequest("User deletion failed.");
+                return BadRequest(string.Join(", ", result.Errors));
             }
 
             return Ok("User deleted successfully.");
@@ -80,9 +80,9 @@ namespace AJKAccessControlAPI.Controllers
         public async Task<IActionResult> ForgotPassword(ForgotPasswordDto forgotPasswordDto)
         {
             var result = await _userService.ForgotPasswordAsync(forgotPasswordDto);
-            if (!result)
+            if (!result.Succeeded)
             {
-                return BadRequest("Password reset failed.");
+                return BadRequest(string.Join(", ", result.Errors));
             }
 
             return Ok("Password reset email sent.");
@@ -93,9 +93,9 @@ namespace AJKAccessControlAPI.Controllers
         public async Task<IActionResult> Update(string email, UpdateUserDto updateUserDto)
         {
             var result = await _userService.UpdateUserAsync(updateUserDto);
-            if (!result)
+            if (!result.Succeeded)
             {
-                return BadRequest("User update failed.");
+                return BadRequest(string.Join(", ", result.Errors));
             }
 
             return Ok("User updated successfully.");
