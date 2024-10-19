@@ -21,7 +21,7 @@ namespace AJKAccessControl.Application.Services
             _jwtSettings = jwtSettings;
         }
 
-        public async Task<OperationResult> RegisterUserAsync(RegisterDto registerDto)
+        public async Task<OperationResult<string>> RegisterUserAsync(RegisterUserDto registerDto)
         {
             var user = new User
             {
@@ -35,12 +35,12 @@ namespace AJKAccessControl.Application.Services
             return await _userRepository.CreateUserAsync(user, registerDto.Password);
         }
 
-        public async Task<OperationResult> LoginUserAsync(LoginDto loginDto)
+        public async Task<OperationResult<string>> LoginUserAsync(LoginDto loginDto)
         {
             var user = await _userRepository.GetUserByEmailAsync(loginDto.Email);
             if (user == null || !(await _userRepository.CheckPasswordAsync(user, loginDto.Password)).Succeeded)
             {
-                return new OperationResult { Succeeded = false, Errors = new List<string> { "Invalid login attempt" } };
+                return new OperationResult<string> { Succeeded = false, Errors = new List<string> { "Invalid login attempt" } };
             }
 
             var tokenHandler = new JwtSecurityTokenHandler();
@@ -66,32 +66,32 @@ namespace AJKAccessControl.Application.Services
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);
-            return new OperationResult
+            return new OperationResult<string>
             {
                 Succeeded = true,
                 Data = tokenHandler.WriteToken(token)
             };
         }
 
-        public async Task<OperationResult> DeleteUserAsync(DeleteUserDto deleteUserDto)
+        public async Task<OperationResult<string>> DeleteUserAsync(DeleteUserDto deleteUserDto)
         {
             var user = await _userRepository.GetUserByEmailAsync(deleteUserDto.Email);
             if (user == null)
             {
-                return new OperationResult { Succeeded = false, Errors = new List<string> { "User not found" } };
+                return new OperationResult<string> { Succeeded = false, Errors = new List<string> { "User not found" } };
             }
 
             var result = await _userRepository.DeleteUserAsync(user);
-            return new OperationResult { Succeeded = result.Succeeded, Errors = result.Errors };
+            return new OperationResult<string> { Succeeded = result.Succeeded, Errors = result.Errors };
         }
 
-        public async Task<OperationResult> ForgotPasswordAsync(ForgotPasswordDto forgotPasswordDto)
+        public async Task<OperationResult<string>> ForgotPasswordAsync(ForgotPasswordDto forgotPasswordDto)
         {
             // Implement logic for password reset
-            return await Task.FromResult(new OperationResult { Succeeded = true });
+            return await Task.FromResult(new OperationResult<string> { Succeeded = true });
         }
 
-        public async Task<OperationResult> UpdateUserAsync(UpdateUserDto updateUserDto)
+        public async Task<OperationResult<string>> UpdateUserAsync(UpdateUserDto updateUserDto)
         {
             var user = new User
             {
@@ -122,7 +122,7 @@ namespace AJKAccessControl.Application.Services
             };
         }
 
-        public async Task<OperationResult> AddUserToRoleAsync(AddUserToRoleDto addRoleDto)
+        public async Task<OperationResult<string>> AddUserToRoleAsync(AddUserToRoleDto addRoleDto)
         {
             return await _userRepository.AddUserToRoleAsync(addRoleDto.Email, addRoleDto.Role);
 

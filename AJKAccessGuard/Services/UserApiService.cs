@@ -47,7 +47,7 @@ namespace AJKAccessGuard.Services
             return response.StatusCode == HttpStatusCode.NoContent;
         }
 
-        public async Task<bool> RegisterUserAsync(RegisterDto registerDto)
+        public async Task<bool> RegisterUserAsync(RegisterUserDto registerDto)
         {
             var response = await _httpClient.PostAsJsonAsync("api/account/register", registerDto);
             response.EnsureSuccessStatusCode();

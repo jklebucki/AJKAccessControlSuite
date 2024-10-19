@@ -41,7 +41,7 @@ namespace AJKAccessControlAPI.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register(RegisterDto registerDto)
+        public async Task<IActionResult> Register(RegisterUserDto registerDto)
         {
             var result = await _userService.RegisterUserAsync(registerDto);
             if (!result.Succeeded)

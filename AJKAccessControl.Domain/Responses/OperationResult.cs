@@ -1,9 +1,9 @@
 namespace AJKAccessControl.Domain.Responses
 {
-    public class OperationResult
+    public class OperationResult<T>
     {
         public bool Succeeded { get; set; } = true;
         public IEnumerable<string> Errors { get; set; } = new List<string>();
-        public string Data { get; set; } = string.Empty;
+        public T? Data { get; set; }
     }
 }

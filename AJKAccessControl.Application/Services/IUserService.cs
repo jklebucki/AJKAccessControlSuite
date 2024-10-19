@@ -5,13 +5,13 @@ namespace AJKAccessControl.Application.Services
 {
     public interface IUserService
     {
-        Task<OperationResult> RegisterUserAsync(RegisterDto registerDto);
-        Task<OperationResult> LoginUserAsync(LoginDto loginDto);
-        Task<OperationResult> DeleteUserAsync(DeleteUserDto deleteUserDto);
-        Task<OperationResult> ForgotPasswordAsync(ForgotPasswordDto forgotPasswordDto);
-        Task<OperationResult> UpdateUserAsync(UpdateUserDto updateUserDto);
+        Task<OperationResult<string>> RegisterUserAsync(RegisterUserDto registerDto);
+        Task<OperationResult<string>> LoginUserAsync(LoginDto loginDto);
+        Task<OperationResult<string>> DeleteUserAsync(DeleteUserDto deleteUserDto);
+        Task<OperationResult<string>> ForgotPasswordAsync(ForgotPasswordDto forgotPasswordDto);
+        Task<OperationResult<string>> UpdateUserAsync(UpdateUserDto updateUserDto);
         Task<UserDto> GetUserAsync(string email);
-        Task<OperationResult> AddUserToRoleAsync(AddUserToRoleDto addRoleDto);
+        Task<OperationResult<string>> AddUserToRoleAsync(AddUserToRoleDto addRoleDto);
         Task<IEnumerable<UserDto>> GetUsersAsync();
     }
 }
