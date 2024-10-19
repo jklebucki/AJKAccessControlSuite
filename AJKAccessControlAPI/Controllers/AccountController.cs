@@ -46,7 +46,7 @@ namespace AJKAccessControlAPI.Controllers
             var result = await _userService.RegisterUserAsync(registerDto);
             if (!result.Succeeded)
             {
-                return BadRequest(string.Join(", ", result.Errors));
+                return BadRequest(string.Join("|", result.Errors));
             }
 
             return Ok("User registered successfully.");
@@ -58,7 +58,7 @@ namespace AJKAccessControlAPI.Controllers
             var result = await _userService.LoginUserAsync(loginDto);
             if (result == null || result.Data == string.Empty)
             {
-                return Unauthorized(result != null ? string.Join(", ", result.Errors) : "Unauthorized access.");
+                return Unauthorized(result != null ? string.Join("|", result.Errors) : "Unauthorized access.");
             }
 
             return Ok(new { Token = result.Data });
@@ -70,7 +70,7 @@ namespace AJKAccessControlAPI.Controllers
             var result = await _userService.DeleteUserAsync(deleteUserDto);
             if (!result.Succeeded)
             {
-                return BadRequest(string.Join(", ", result.Errors));
+                return BadRequest(string.Join("|", result.Errors));
             }
 
             return Ok("User deleted successfully.");
@@ -82,7 +82,7 @@ namespace AJKAccessControlAPI.Controllers
             var result = await _userService.ForgotPasswordAsync(forgotPasswordDto);
             if (!result.Succeeded)
             {
-                return BadRequest(string.Join(", ", result.Errors));
+                return BadRequest(string.Join("|", result.Errors));
             }
 
             return Ok("Password reset email sent.");
@@ -95,7 +95,7 @@ namespace AJKAccessControlAPI.Controllers
             var result = await _userService.UpdateUserAsync(updateUserDto);
             if (!result.Succeeded)
             {
-                return BadRequest(string.Join(", ", result.Errors));
+                return BadRequest(string.Join("|", result.Errors));
             }
 
             return Ok("User updated successfully.");
