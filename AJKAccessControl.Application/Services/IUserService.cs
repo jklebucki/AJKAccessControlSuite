@@ -1,5 +1,5 @@
 using AJKAccessControl.Domain.Responses;
-using AJKAccessControl.Shared.DTOs; // Assuming UserDto is in this namespace
+using AJKAccessControl.Shared.DTOs;
 
 namespace AJKAccessControl.Application.Services
 {

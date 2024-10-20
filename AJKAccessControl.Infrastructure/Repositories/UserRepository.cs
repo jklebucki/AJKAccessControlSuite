@@ -133,5 +133,6 @@ namespace AJKAccessControl.Infrastructure.Repositories
         {
             return await _userManager.Users.ToListAsync();
         }
+
     }
 }

@@ -4,6 +4,7 @@
 @inject IUsersApiService api
 @inject IUserStorageService userStorage
 @inject NavigationManager NavigationManager
+@inject IJSRuntime JS
 
 <PageTitle>UserManagement</PageTitle>
 
@@ -33,14 +34,53 @@
         break;
 }
 
+<div class="modal fade" id="deleteUserModal" tabindex="-1" aria-labelledby="deleteUserModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteUserModalLabel">Potwierdzenie usunięcia</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @onclick="HideDeleteUser"></button>
+            </div>
+            <div class="modal-body">
+                Czy na pewno chcesz usunąć użytkownika @userToDelete?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @onclick="HideDeleteUser">Anuluj</button>
+                <button type="button" class="btn btn-danger" @onclick="ConfirmDeleteUser">Usuń</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 @code {
+    private string userToDelete = string.Empty;
+
     private List<UserDto> users = new List<UserDto>();
     private string windowMode = "list";
     private List<string> errors = new List<string>();
+
+    private async Task ShowDeleteModal(string userName)
+    {
+        userToDelete = userName;
+        await JS.InvokeVoidAsync("eval", "new bootstrap.Modal(document.getElementById('deleteUserModal')).show()");
+    }
+
+    private async Task HideDeleteUser()
+    {
+        await JS.InvokeVoidAsync("eval", "new bootstrap.Modal(document.getElementById('deleteUserModal')).hide()");
+    }
+
+    private async Task ConfirmDeleteUser()
+    {
+        await DeleteUser(userToDelete);
+    }
+
     private void OpenCrateUserComponent()
     {
         windowMode = "add";
     }
+
     private async Task CloseCreateUserComponent(bool isSaved)
     {
         windowMode = "list";
@@ -56,6 +96,11 @@
     }
 
     private async Task OnDeleteUser(string userName)
+    {
+        await ShowDeleteModal(userName);
+    }
+
+    private async Task DeleteUser(string userName)
     {
         var token = await userStorage.GetTokenAsync();
         if (string.IsNullOrEmpty(token))
@@ -79,6 +124,7 @@
                 errors.AddRange(response.Errors);
             }
         }
+        await HideDeleteUser();
     }
 
     private async Task GetUserList()

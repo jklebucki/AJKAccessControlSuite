@@ -1,6 +1,7 @@
 using AJKAccessControl.Application.Services;
 using AJKAccessControl.Domain.Entities;
 using AJKAccessControl.Infrastructure.Data;
+using AJKAccessControl.Infrastructure.Identity;
 using AJKAccessControl.Infrastructure.Repositories;
 using AJKAccessControl.Shared.Configurations;
 using AJKAccessControlAPI.Middleware;
@@ -74,6 +75,12 @@ builder.Services.AddSingleton(jwtSettings);
 builder.Services.AddJwtAuthentication(builder.Configuration);
 
 var app = builder.Build();
+using (var scope = app.Services.CreateScope())
+{
+    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole<Guid>>>();
+    var identityRoleSeeder = new IdentityRoleSeeder(roleManager);
+    await identityRoleSeeder.CreateDefaultRoles();
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

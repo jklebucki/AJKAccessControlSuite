@@ -2,16 +2,26 @@ using Microsoft.AspNetCore.Identity;
 
 namespace AJKAccessControl.Infrastructure.Identity
 {
-    public static class IdentityRoleSeeder
+    public class IdentityRoleSeeder
     {
-        public static IEnumerable<IdentityRole<Guid>> GetDefaultRoles()
+        private readonly RoleManager<IdentityRole<Guid>> _roleManager;
+
+        public IdentityRoleSeeder(RoleManager<IdentityRole<Guid>> roleManager)
         {
-            return new List<IdentityRole<Guid>>
+            _roleManager = roleManager;
+        }
+
+        public async Task CreateDefaultRoles()
+        {
+            var roles = Enum.GetValues(typeof(Role)).Cast<Role>().Select(r => r.ToString()).ToList();
+            foreach (var role in roles)
             {
-                new IdentityRole<Guid> { Id = Guid.NewGuid(), Name = Role.Admin.ToString(), NormalizedName = Role.Admin.ToString().ToUpper() },
-                new IdentityRole<Guid> { Id = Guid.NewGuid(), Name = Role.Supervisor.ToString(), NormalizedName = Role.Supervisor.ToString().ToUpper() },
-                new IdentityRole<Guid> { Id = Guid.NewGuid(), Name = Role.User.ToString(), NormalizedName = Role.User.ToString().ToUpper() }
-            };
+                var roleExists = await _roleManager.RoleExistsAsync(role.ToString());
+                if (!roleExists)
+                {
+                    var result = await _roleManager.CreateAsync(new IdentityRole<Guid>(role.ToString()));
+                }
+            }
         }
     }
 }
