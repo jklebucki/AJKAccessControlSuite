@@ -64,10 +64,16 @@ namespace AJKAccessControlAPI.Controllers
             return Ok(new { Token = result.Data });
         }
 
-        [HttpPost("delete")]
-        public async Task<IActionResult> Delete(DeleteUserDto deleteUserDto)
+        [HttpDelete("delete/{userName}")]
+        [Authorize]
+        public async Task<IActionResult> Delete(string userName)
         {
-            var result = await _userService.DeleteUserAsync(deleteUserDto);
+            var userDto = await _userService.GetUserAsync(userName);
+            if (userDto == null || userDto.UserName != userName)
+            {
+                return NotFound("User not found.");
+            }
+            var result = await _userService.DeleteUserAsync(new DeleteUserDto { UserName = userName });
             if (!result.Succeeded)
             {
                 return BadRequest(string.Join("|", result.Errors));

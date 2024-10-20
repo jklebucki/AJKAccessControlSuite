@@ -38,6 +38,8 @@ namespace AJKAccessGuard.Services
         {
             try
             {
+                _httpClient.DefaultRequestHeaders.Clear();
+                _httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
                 var response = await _httpClient.PutAsJsonAsync($"api/account/update/{user.Email}", user);
                 response.EnsureSuccessStatusCode();
                 return new OperationResult<string> { Data = response.StatusCode == HttpStatusCode.NoContent ? "Success" : "Failed" };
@@ -52,13 +54,13 @@ namespace AJKAccessGuard.Services
         {
             try
             {
-                var response = await _httpClient.DeleteAsync($"api/account/delete/{user.Email}");
+                var response = await _httpClient.DeleteAsync($"api/account/delete/{user.UserName}");
                 response.EnsureSuccessStatusCode();
                 return new OperationResult<string> { Data = response.StatusCode == HttpStatusCode.NoContent ? "Success" : "Failed" };
             }
             catch (HttpRequestException ex)
             {
-                return new OperationResult<string> { Errors = [ex.InnerException == null ? ex.Message : ex.InnerException.Message] };
+                return new OperationResult<string> { Succeeded = false, Errors = [ex.InnerException == null ? ex.Message : ex.InnerException.Message] };
             }
         }
 

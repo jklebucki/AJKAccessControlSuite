@@ -12,19 +12,31 @@
         Zarządzanie użytkownikami
     </h1>
 </div>
+@if (errors.Any())
+{
+    <div class="alert alert-danger">
+    <ul>
+        @foreach (var error in errors)
+            {
+                <li>@error</li>
+            }
+        </ul>
+    </div>
+}
 @switch (windowMode)
 {
     case "list":
-        <UsersList Users="users" AddUser="OpenCrateUserComponent" />
+        <UsersList Users="users" AddUser="OpenCrateUserComponent" DeleteUser="OnDeleteUser" />
         break;
     case "add":
-        <CreateUser Close="CloseCreateUserComponent"/>
+        <CreateUser Close="CloseCreateUserComponent" />
         break;
 }
 
 @code {
     private List<UserDto> users = new List<UserDto>();
     private string windowMode = "list";
+    private List<string> errors = new List<string>();
     private void OpenCrateUserComponent()
     {
         windowMode = "add";
@@ -37,10 +49,36 @@
             await GetUserList();
         }
     }
-    
+
     protected override async Task OnInitializedAsync()
     {
         await GetUserList();
+    }
+
+    private async Task OnDeleteUser(string userName)
+    {
+        var token = await userStorage.GetTokenAsync();
+        if (string.IsNullOrEmpty(token))
+        {
+            NavigationManager.NavigateTo("/signin");
+        }
+        else
+        {
+            var userDto = users.FirstOrDefault(u => u.UserName == userName);
+            if (userDto == null)
+            {
+                return;
+            }
+            var response = await api.DeleteUserAsync(userDto, token);
+            if (response.Succeeded)
+            {
+                users.Remove(userDto);
+            }
+            else
+            {
+                errors.AddRange(response.Errors);
+            }
+        }
     }
 
     private async Task GetUserList()
