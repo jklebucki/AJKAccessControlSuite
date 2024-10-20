@@ -39,13 +39,13 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="deleteUserModalLabel">Potwierdzenie usunięcia</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @onclick="HideDeleteUser"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @onclick="HideDeleteUserModal"></button>
             </div>
             <div class="modal-body">
                 Czy na pewno chcesz usunąć użytkownika @userToDelete?
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @onclick="HideDeleteUser">Anuluj</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @onclick="HideDeleteUserModal">Anuluj</button>
                 <button type="button" class="btn btn-danger" @onclick="ConfirmDeleteUser">Usuń</button>
             </div>
         </div>
@@ -60,19 +60,20 @@
     private string windowMode = "list";
     private List<string> errors = new List<string>();
 
-    private async Task ShowDeleteModal(string userName)
+    private async Task ShowDeleteUserModal(string userName)
     {
         userToDelete = userName;
         await JS.InvokeVoidAsync("eval", "new bootstrap.Modal(document.getElementById('deleteUserModal')).show()");
     }
 
-    private async Task HideDeleteUser()
+    private async Task HideDeleteUserModal()
     {
-        await JS.InvokeVoidAsync("eval", "new bootstrap.Modal(document.getElementById('deleteUserModal')).hide()");
+        await JS.InvokeVoidAsync("eval", "bootstrap.Modal.getInstance(document.getElementById('deleteUserModal')).hide()");
     }
 
     private async Task ConfirmDeleteUser()
     {
+        await HideDeleteUserModal();
         await DeleteUser(userToDelete);
     }
 
@@ -97,7 +98,7 @@
 
     private async Task OnDeleteUser(string userName)
     {
-        await ShowDeleteModal(userName);
+        await ShowDeleteUserModal(userName);
     }
 
     private async Task DeleteUser(string userName)
@@ -124,7 +125,6 @@
                 errors.AddRange(response.Errors);
             }
         }
-        await HideDeleteUser();
     }
 
     private async Task GetUserList()
