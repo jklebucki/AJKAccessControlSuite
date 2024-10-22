@@ -23,7 +23,6 @@ public class CustomAuthenticationStateProvider : AuthenticationStateProvider
             // Extract claims from the JWT token
             var handler = new System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler();
             var jwtToken = handler.ReadJwtToken(token);
-
             var claims = jwtToken.Claims;
 
             identity = new ClaimsIdentity(claims, "apiauth_type");

@@ -78,8 +78,11 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole<Guid>>>();
+    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
     var identityRoleSeeder = new IdentityRoleSeeder(roleManager);
+    var identityUserSeeder = new IdentityUserSeeder(userManager, roleManager);
     await identityRoleSeeder.CreateDefaultRoles();
+    await identityUserSeeder.CreateDefaultUsers();
 }
 
 // Configure the HTTP request pipeline.

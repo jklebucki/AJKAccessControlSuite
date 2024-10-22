@@ -58,6 +58,11 @@
                 return;
             }
             var userResult = await UserApiService.GetUserAsync(loginModel.UserName,tokenResult.Data!);
+            if (!userResult.Succeeded)
+            {
+                errors.AddRange(userResult.Errors);
+                return;
+            }
             await UserStorageService.StoreTokenAsync(tokenResult.Data!);
             await UserStorageService.StoreUserAsync(userResult.Data!);
             var authProvider = AuthenticationStateProvider as CustomAuthenticationStateProvider;

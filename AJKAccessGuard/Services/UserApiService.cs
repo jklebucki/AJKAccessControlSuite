@@ -117,7 +117,11 @@ namespace AJKAccessGuard.Services
                 var response = await _httpClient.PostAsJsonAsync("api/Account/login", loginDto);
                 response.EnsureSuccessStatusCode();
                 var data = await response.Content.ReadFromJsonAsync<LoginResponseDto>();
-                return new OperationResult<string> { Data = data!.Token };
+                if (data == null || data.Token == null)
+                {
+                    throw new HttpRequestException("Invalid credentials.");
+                }
+                return new OperationResult<string> { Succeeded = true, Data = data!.Token };
             }
             catch (HttpRequestException ex)
             {

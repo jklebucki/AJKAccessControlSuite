@@ -1,3 +1,4 @@
+using System.Security.Principal;
 using AJKAccessControl.Shared.DTOs;
 using Microsoft.JSInterop;
 
@@ -45,9 +46,17 @@ public class UserStorageService : IUserStorageService
         await _jsRuntime.InvokeVoidAsync("localStorage.setItem", "accessToken", token);
     }
 
-    public async Task<string> GetTokenAsync()
+    public async Task<string?> GetTokenAsync()
     {
-        return await _jsRuntime.InvokeAsync<string>("localStorage.getItem", "accessToken");
+        var token = await _jsRuntime.InvokeAsync<string?>("localStorage.getItem", "accessToken");
+        if (token == "null")
+        {
+            return string.Empty;
+        }
+        else
+        {
+            return token;
+        }
     }
 
     public async Task ClearStorage()
