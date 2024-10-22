@@ -11,5 +11,6 @@ namespace AJKAccessGuard.Services
         Task<OperationResult<IEnumerable<UserDto>>> GetAllUsersAsync(string token);
         Task<OperationResult<string>> UpdateUserAsync(UserDto user, string token);
         Task<OperationResult<string>> DeleteUserAsync(UserDto user, string token);
+        Task<OperationResult<string>> ChangePasswordAsync(ChangePasswordDto changePasswordDto, string token);
     }
 }

@@ -18,20 +18,34 @@ namespace AJKAccessGuard.Services
         {
             _httpClient.DefaultRequestHeaders.Clear();
             _httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
-            var user = await _httpClient.GetFromJsonAsync<UserDto>($"api/account/get-user/{userName}");
-            if (user == null)
+            try
             {
-                throw new HttpRequestException("User not found.");
+                var user = await _httpClient.GetFromJsonAsync<UserDto>($"api/account/get-user/{userName}");
+                if (user == null)
+                {
+                    throw new HttpRequestException("User not found.");
+                }
+                return new OperationResult<UserDto>() { Succeeded = true, Data = user };
             }
-            return new OperationResult<UserDto>() { Data = user };
+            catch (HttpRequestException ex)
+            {
+                return new OperationResult<UserDto>() { Succeeded = false, Errors = [ex.InnerException == null ? ex.Message : ex.InnerException.Message] };
+            }
         }
 
         public async Task<OperationResult<IEnumerable<UserDto>>> GetAllUsersAsync(string token)
         {
             _httpClient.DefaultRequestHeaders.Clear();
             _httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
-            var users = await _httpClient.GetFromJsonAsync<IEnumerable<UserDto>>("api/account/get-users");
-            return new OperationResult<IEnumerable<UserDto>>() { Data = users ?? Enumerable.Empty<UserDto>() };
+            try
+            {
+                var users = await _httpClient.GetFromJsonAsync<IEnumerable<UserDto>>("api/account/get-users");
+                return new OperationResult<IEnumerable<UserDto>>() { Succeeded = true, Data = users ?? Enumerable.Empty<UserDto>() };
+            }
+            catch (HttpRequestException ex)
+            {
+                return new OperationResult<IEnumerable<UserDto>>() { Succeeded = false, Errors = [ex.InnerException == null ? ex.Message : ex.InnerException.Message] };
+            }
         }
 
         public async Task<OperationResult<string>> UpdateUserAsync(UserDto user, string token)
@@ -57,6 +71,22 @@ namespace AJKAccessGuard.Services
                 var response = await _httpClient.DeleteAsync($"api/account/delete/{user.UserName}");
                 response.EnsureSuccessStatusCode();
                 return new OperationResult<string> { Data = response.StatusCode == HttpStatusCode.NoContent ? "Success" : "Failed" };
+            }
+            catch (HttpRequestException ex)
+            {
+                return new OperationResult<string> { Succeeded = false, Errors = [ex.InnerException == null ? ex.Message : ex.InnerException.Message] };
+            }
+        }
+
+        public async Task<OperationResult<string>> ChangePasswordAsync(ChangePasswordDto changePasswordDto, string token)
+        {
+            try
+            {
+                _httpClient.DefaultRequestHeaders.Clear();
+                _httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
+                var response = await _httpClient.PutAsJsonAsync("api/account/change-password", changePasswordDto);
+                response.EnsureSuccessStatusCode();
+                return new OperationResult<string> { Data = response.StatusCode == HttpStatusCode.OK ? "Success" : "Failed" };
             }
             catch (HttpRequestException ex)
             {

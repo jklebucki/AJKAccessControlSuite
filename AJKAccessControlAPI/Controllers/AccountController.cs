@@ -17,7 +17,7 @@ namespace AJKAccessControlAPI.Controllers
         }
 
         [HttpGet("get-user/{userName}")]
-        [Authorize]
+        [Authorize (Roles = "Admin, Supervisor, User")]
         public async Task<IActionResult> GetUser(string userName)
         {
             var user = await _userService.GetUserAsync(userName);
@@ -29,7 +29,7 @@ namespace AJKAccessControlAPI.Controllers
         }
 
         [HttpGet("get-users")]
-        [Authorize]
+        [Authorize(Roles = "Admin, Supervisor")]
         public async Task<IActionResult> GetUsers()
         {
             var user = await _userService.GetUsersAsync();
@@ -65,7 +65,7 @@ namespace AJKAccessControlAPI.Controllers
         }
 
         [HttpDelete("delete/{userName}")]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(string userName)
         {
             var userDto = await _userService.GetUserAsync(userName);
@@ -83,6 +83,7 @@ namespace AJKAccessControlAPI.Controllers
         }
 
         [HttpPut("change-password")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> ChangePassword(ChangePasswordDto forgotPasswordDto)
         {
             var result = await _userService.ChangePasswordAsync(forgotPasswordDto);
@@ -95,7 +96,7 @@ namespace AJKAccessControlAPI.Controllers
         }
 
         [HttpPut("update/{email}")]
-        [Authorize]
+        [Authorize(Roles = "Admin, Supervisor, User")]
         public async Task<IActionResult> Update(string email, UpdateUserDto updateUserDto)
         {
             var result = await _userService.UpdateUserAsync(updateUserDto);

@@ -27,7 +27,7 @@
 @switch (windowMode)
 {
     case "list":
-        <UsersList Users="users" AddUser="OpenCrateUserComponent" DeleteUser="OnDeleteUser" />
+        <UsersList Users="users" AddUser="OpenCrateUserComponent" DeleteUser="OnDeleteUser" ChangePassword="OnChangePassword" />
         break;
     case "add":
         <CreateUser Close="CloseCreateUserComponent" />
@@ -52,6 +52,23 @@
     </div>
 </div>
 
+<div class="modal fade" id="updatePasswordModal" tabindex="-1" aria-labelledby="updatePasswordModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="updatePasswordModalLabel">Zmiana hasła</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @onclick="HideUpdatePasswordModal"></button>
+            </div>
+            <div class="modal-body">
+                <input type="password" class="form-control" placeholder="Nowe hasło" @bind="changePasswordDto.Password" />
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @onclick="HideUpdatePasswordModal">Anuluj</button>
+                <button type="button" class="btn btn-primary" @onclick="ConfirmUpdatePassword">Zmień</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 @code {
     private string userToDelete = string.Empty;
@@ -59,6 +76,29 @@
     private List<UserDto> users = new List<UserDto>();
     private string windowMode = "list";
     private List<string> errors = new List<string>();
+
+    private ChangePasswordDto changePasswordDto = new ChangePasswordDto();
+
+    private async Task GetUserList()
+    {
+        var token = await userStorage.GetTokenAsync();
+        if (string.IsNullOrEmpty(token))
+        {
+            NavigationManager.NavigateTo("/signin");
+        }
+        else
+        {
+            var result = await api.GetAllUsersAsync(token);
+            if (result.Succeeded)
+            {
+                users = result.Data!.ToList();
+            }
+            else
+            {
+                errors.AddRange(result.Errors);
+            }
+        }
+    }
 
     private async Task ShowDeleteUserModal(string userName)
     {
@@ -127,7 +167,24 @@
         }
     }
 
-    private async Task GetUserList()
+    private async Task OnChangePassword(string userName)
+    {
+        changePasswordDto.UserName = userName;
+        await JS.InvokeVoidAsync("eval", "new bootstrap.Modal(document.getElementById('updatePasswordModal')).show()");
+    }
+
+    private async Task HideUpdatePasswordModal()
+    {
+        await JS.InvokeVoidAsync("eval", "bootstrap.Modal.getInstance(document.getElementById('updatePasswordModal')).hide()");
+    }
+
+    private async Task ConfirmUpdatePassword()
+    {
+        await HideUpdatePasswordModal();
+        await UpdatePassword(changePasswordDto);
+    }
+
+    private async Task UpdatePassword(ChangePasswordDto changePasswordDto)
     {
         var token = await userStorage.GetTokenAsync();
         if (string.IsNullOrEmpty(token))
@@ -136,7 +193,15 @@
         }
         else
         {
-            users = (await api.GetAllUsersAsync(token)).Data!.ToList();
+            var response = await api.ChangePasswordAsync(changePasswordDto, token);
+            if (response.Succeeded)
+            {
+                await JS.InvokeVoidAsync("alert", "Hasło zostało zmienione");
+            }
+            else
+            {
+                errors.AddRange(response.Errors);
+            }
         }
     }
 }
