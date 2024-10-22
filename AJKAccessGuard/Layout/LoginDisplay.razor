@@ -22,7 +22,11 @@
     private UserDto userDto = new UserDto();
     protected override async Task OnInitializedAsync()
     {
-        AuthenticationStateProvider.AuthenticationStateChanged += OnAuthenticationStateChanged;
+        var authProvider = AuthenticationStateProvider as CustomAuthenticationStateProvider;
+        if (authProvider != null)
+        {
+            authProvider.AuthenticationStateChanged += OnAuthenticationStateChanged;
+        }
         userDto = await userStorage.GetUserAsync();
         await Task.CompletedTask;
     }
@@ -38,6 +42,7 @@
         } else
         {
             userDto = await userStorage.GetUserAsync();
+            StateHasChanged();
         }
     }
 

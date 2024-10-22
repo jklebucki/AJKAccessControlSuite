@@ -1,0 +1,16 @@
+@if (ErrorList.Any())
+{
+    <div class="alert alert-danger">
+    <ul>
+        @foreach (var error in ErrorList)
+            {
+                <li>@error</li>
+            }
+        </ul>
+    </div>
+}
+
+@code{
+    [Parameter]
+    public List<string> ErrorList { get; set; } = new List<string>();
+}

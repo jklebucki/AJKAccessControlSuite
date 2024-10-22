@@ -13,17 +13,8 @@
         Zarządzanie użytkownikami
     </h1>
 </div>
-@if (errors.Any())
-{
-    <div class="alert alert-danger">
-    <ul>
-        @foreach (var error in errors)
-            {
-                <li>@error</li>
-            }
-        </ul>
-    </div>
-}
+<Errors ErrorList="errors" />
+
 @switch (windowMode)
 {
     case "list":
@@ -59,13 +50,25 @@
                 <h5 class="modal-title" id="updatePasswordModalLabel">Zmiana hasła</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @onclick="HideUpdatePasswordModal"></button>
             </div>
-            <div class="modal-body">
-                <input type="password" class="form-control" placeholder="Nowe hasło" @bind="changePasswordDto.Password" />
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @onclick="HideUpdatePasswordModal">Anuluj</button>
-                <button type="button" class="btn btn-primary" @onclick="ConfirmUpdatePassword">Zmień</button>
-            </div>
+            <EditForm Model="changePasswordDto" OnValidSubmit="ConfirmUpdatePassword">
+                <div class="modal-body">
+                    <DataAnnotationsValidator />
+                    <ValidationSummary />
+                    <div class="mb-3">
+                        <label for="newPassword" class="form-label">Nowe hasło</label>
+                        <input type="password" class="form-control" id="newPassword" placeholder="Nowe hasło" @bind="changePasswordDto.Password" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="repeatPassword" class="form-label">Powtórz hasło</label>
+                        <input type="password" class="form-control" id="repeatPassword" placeholder="Powtórz hasło" @bind="confirmPassword" />
+                    </div>
+                </div>
+                <Errors ErrorList="modalErrors" />
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Zmień</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @onclick="HideUpdatePasswordModal">Anuluj</button>
+                </div>
+            </EditForm>
         </div>
     </div>
 </div>
@@ -76,8 +79,10 @@
     private List<UserDto> users = new List<UserDto>();
     private string windowMode = "list";
     private List<string> errors = new List<string>();
+    private List<string> modalErrors = new List<string>();
 
     private ChangePasswordDto changePasswordDto = new ChangePasswordDto();
+    private string confirmPassword = string.Empty;
 
     private async Task GetUserList()
     {
@@ -180,6 +185,11 @@
 
     private async Task ConfirmUpdatePassword()
     {
+        if (changePasswordDto.Password != confirmPassword)
+        {
+            modalErrors.Add("Hasła nie są takie same");
+            return;
+        }
         await HideUpdatePasswordModal();
         await UpdatePassword(changePasswordDto);
     }
