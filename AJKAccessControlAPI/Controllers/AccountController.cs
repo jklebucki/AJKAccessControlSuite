@@ -82,16 +82,16 @@ namespace AJKAccessControlAPI.Controllers
             return Ok("User deleted successfully.");
         }
 
-        [HttpPost("forgot-password")]
-        public async Task<IActionResult> ForgotPassword(ForgotPasswordDto forgotPasswordDto)
+        [HttpPut("change-password")]
+        public async Task<IActionResult> ChangePassword(ChangePasswordDto forgotPasswordDto)
         {
-            var result = await _userService.ForgotPasswordAsync(forgotPasswordDto);
+            var result = await _userService.ChangePasswordAsync(forgotPasswordDto);
             if (!result.Succeeded)
             {
                 return BadRequest(string.Join("|", result.Errors));
             }
 
-            return Ok("Password reset email sent.");
+            return Ok("Password changed successfully.");
         }
 
         [HttpPut("update/{email}")]

@@ -85,10 +85,15 @@ namespace AJKAccessControl.Application.Services
             return new OperationResult<string> { Succeeded = result.Succeeded, Errors = result.Errors };
         }
 
-        public async Task<OperationResult<string>> ForgotPasswordAsync(ForgotPasswordDto forgotPasswordDto)
+        public async Task<OperationResult<string>> ChangePasswordAsync(ChangePasswordDto changePasswordDto)
         {
-            // Implement logic for password reset
-            return await Task.FromResult(new OperationResult<string> { Succeeded = true });
+            var user = await _userRepository.GetUserByUserNamelAsync(changePasswordDto.UserName);
+            if (user == null)
+            {
+                return new OperationResult<string> { Succeeded = false, Errors = new List<string> { "User not found" } };
+            }
+
+            return await _userRepository.ChangePasswordAsync(user, changePasswordDto.Password);
         }
 
         public async Task<OperationResult<string>> UpdateUserAsync(UpdateUserDto updateUserDto)

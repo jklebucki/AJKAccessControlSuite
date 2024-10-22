@@ -12,5 +12,6 @@ namespace AJKAccessControl.Infrastructure.Repositories
         Task<OperationResult<string>> UpdateUserAsync(User user, string password);
         Task<OperationResult<string>> AddUserToRoleAsync(string userName, string role);
         Task<IEnumerable<User>> GetUsersAsync();
+        Task<OperationResult<string>> ChangePasswordAsync(User user, string password);
     }
 }

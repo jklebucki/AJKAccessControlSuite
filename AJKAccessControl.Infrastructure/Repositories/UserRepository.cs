@@ -134,5 +134,15 @@ namespace AJKAccessControl.Infrastructure.Repositories
             return await _userManager.Users.ToListAsync();
         }
 
+        public async Task<OperationResult<string>> ChangePasswordAsync(User user, string password)
+        {
+            await  _userManager.RemovePasswordAsync(user);
+            var result = await _userManager.AddPasswordAsync(user, password);
+            return new OperationResult<string>
+            {
+                Succeeded = result.Succeeded,
+                Errors = result.Succeeded ? new List<string>() : result.Errors.Select(e => e.Description).ToList()
+            };
+        }
     }
 }
