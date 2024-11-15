@@ -17,33 +17,33 @@ public class UserRepositoryTests
     {
         var store = new Mock<IUserStore<User>>();
         _userManagerMock = new Mock<UserManager<User>>(
-            store.Object, null, null, null, null, null, null, null, null);
+            store.Object, null!, null!, null!, null!, null!, null!, null!, null!);
         _userRepository = new UserRepository(_userManagerMock.Object);
     }
 
     [Fact]
-public async Task GetUserByUserNameAsync_UserExists_ReturnsUser()
-{
-    // Arrange
-    var userName = "testuser";
-    var user = new User { UserName = userName };
-    var users = new List<User> { user };
-    var mockUsers = new TestAsyncEnumerable<User>(users);
+    public async Task GetUserByUserNameAsync_UserExists_ReturnsUser()
+    {
+        // Arrange
+        var userName = "testuser";
+        var user = new User { UserName = userName };
+        var users = new List<User> { user };
+        var mockUsers = new TestAsyncEnumerable<User>(users);
 
-    _userManagerMock.Setup(um => um.Users)
-        .Returns(mockUsers);
+        _userManagerMock.Setup(um => um.Users)
+            .Returns(mockUsers);
 
-    _userManagerMock.Setup(um => um.GetRolesAsync(user))
-        .ReturnsAsync(new List<string> { "User" });
+        _userManagerMock.Setup(um => um.GetRolesAsync(user))
+            .ReturnsAsync(new List<string> { "User" });
 
-    // Act
-    var result = await _userRepository.GetUserByUserNamelAsync(userName);
+        // Act
+        var result = await _userRepository.GetUserByUserNamelAsync(userName);
 
-    // Assert
-    Assert.NotNull(result);
-    Assert.Equal(userName, result.UserName);
-    Assert.Contains("User", result.Roles);
-}
+        // Assert
+        Assert.NotNull(result);
+        Assert.Equal(userName, result.UserName);
+        Assert.Contains("User", result.Roles);
+    }
 
     [Fact]
     public async Task CreateUserAsync_ValidUser_ReturnsSuccess()
@@ -109,7 +109,7 @@ public async Task GetUserByUserNameAsync_UserExists_ReturnsUser()
             FirstName = "First",
             LastName = "Last",
             Email = "test@example.com",
-            Roles = new List<string> { "User" }
+            Roles = new List<string> { "User" }!
         };
         var existingUser = new User { UserName = userName };
         _userManagerMock.Setup(um => um.FindByNameAsync(user.UserName))
@@ -146,28 +146,28 @@ public async Task GetUserByUserNameAsync_UserExists_ReturnsUser()
     }
 
     [Fact]
-public async Task GetUsersAsync_ReturnsUserList()
-{
-    // Arrange
-    var users = new List<User>
+    public async Task GetUsersAsync_ReturnsUserList()
+    {
+        // Arrange
+        var users = new List<User>
     {
         new User { UserName = "user1" },
         new User { UserName = "user2" }
     };
 
-    var mockUsers = new TestAsyncEnumerable<User>(users);
+        var mockUsers = new TestAsyncEnumerable<User>(users);
 
-    _userManagerMock.Setup(um => um.Users)
-        .Returns(mockUsers);
+        _userManagerMock.Setup(um => um.Users)
+            .Returns(mockUsers);
 
-    // Act
-    var result = await _userRepository.GetUsersAsync();
+        // Act
+        var result = await _userRepository.GetUsersAsync();
 
-    // Assert
-    Assert.Equal(2, result.Count());
-    Assert.Contains(result, u => u.UserName == "user1");
-    Assert.Contains(result, u => u.UserName == "user2");
-}
+        // Assert
+        Assert.Equal(2, result.Count());
+        Assert.Contains(result, u => u.UserName == "user1");
+        Assert.Contains(result, u => u.UserName == "user2");
+    }
 
     [Fact]
     public async Task ChangePasswordAsync_UserExists_ReturnsSuccess()

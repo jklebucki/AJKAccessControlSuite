@@ -26,7 +26,7 @@ public class TestAsyncQueryProvider<TEntity> : IAsyncQueryProvider
 
     public object Execute(Expression expression)
     {
-        return _inner.Execute(expression);
+        return _inner.Execute(expression)!;
     }
 
     public TResult Execute<TResult>(Expression expression)
@@ -45,8 +45,9 @@ public class TestAsyncQueryProvider<TEntity> : IAsyncQueryProvider
         return Task.FromResult(result);
     }
 
+
     TResult IAsyncQueryProvider.ExecuteAsync<TResult>(Expression expression, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        return Execute<TResult>(expression);
     }
 }
