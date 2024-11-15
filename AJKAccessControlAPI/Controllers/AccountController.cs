@@ -95,11 +95,11 @@ namespace AJKAccessControlAPI.Controllers
             return Ok("Password changed successfully.");
         }
 
-        [HttpPut("update/{email}")]
-        [Authorize(Roles = "Admin, Supervisor, User")]
-        public async Task<IActionResult> Update(string email, UpdateUserDto updateUserDto)
+        [HttpPut("update/{userName}")]
+        [Authorize(Roles = "Admin, Supervisor")]
+        public async Task<IActionResult> Update(string userName, UpdateUserDto updateUserDto)
         {
-            var result = await _userService.UpdateUserAsync(updateUserDto);
+            var result = await _userService.UpdateUserAsync(userName, updateUserDto);
             if (!result.Succeeded)
             {
                 return BadRequest(string.Join("|", result.Errors));

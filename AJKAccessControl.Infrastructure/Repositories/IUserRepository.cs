@@ -9,7 +9,7 @@ namespace AJKAccessControl.Infrastructure.Repositories
         Task<OperationResult<string>> CreateUserAsync(User user, string password, string role);
         Task<OperationResult<string>> DeleteUserAsync(User user);
         Task<OperationResult<string>> CheckPasswordAsync(User user, string password);
-        Task<OperationResult<string>> UpdateUserAsync(User user, string password);
+        Task<OperationResult<string>> UpdateUserAsync(string userName, User user);
         Task<OperationResult<string>> AddUserToRoleAsync(string userName, string role);
         Task<IEnumerable<User>> GetUsersAsync();
         Task<OperationResult<string>> ChangePasswordAsync(User user, string password);

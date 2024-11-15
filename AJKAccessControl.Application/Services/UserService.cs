@@ -96,15 +96,29 @@ namespace AJKAccessControl.Application.Services
             return await _userRepository.ChangePasswordAsync(user, changePasswordDto.Password);
         }
 
-        public async Task<OperationResult<string>> UpdateUserAsync(UpdateUserDto updateUserDto)
+        public async Task<OperationResult<string>> UpdateUserAsync(string userName, UpdateUserDto updateUserDto)
         {
-            var user = new User
+            var user = await _userRepository.GetUserByUserNamelAsync(userName);
+            if (user == null)
             {
-                FirstName = updateUserDto.FirstName,
-                LastName = updateUserDto.LastName
-            };
+                return new OperationResult<string> { Succeeded = false, Errors = new List<string> { "User not found" } };
+            }
 
-            return await _userRepository.UpdateUserAsync(user, updateUserDto.Password);
+            user.PhoneNumber = updateUserDto.PhoneNumber;
+            user.Email = updateUserDto.Email;
+            user.FirstName = updateUserDto.FirstName;
+            user.LastName = updateUserDto.LastName;
+            user.Roles = updateUserDto.Roles;
+
+            if (!string.IsNullOrEmpty(updateUserDto.Password))
+            {
+                var passwordResult = await _userRepository.ChangePasswordAsync(user, updateUserDto.Password);
+                if (!passwordResult.Succeeded)
+                {
+                    return passwordResult;
+                }
+            }
+            return await _userRepository.UpdateUserAsync(userName, user);
         }
 
         public async Task<UserDto> GetUserAsync(string userName)

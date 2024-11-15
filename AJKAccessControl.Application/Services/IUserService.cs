@@ -9,7 +9,7 @@ namespace AJKAccessControl.Application.Services
         Task<OperationResult<string>> LoginUserAsync(LoginDto loginDto);
         Task<OperationResult<string>> DeleteUserAsync(DeleteUserDto deleteUserDto);
         Task<OperationResult<string>> ChangePasswordAsync(ChangePasswordDto forgotPasswordDto);
-        Task<OperationResult<string>> UpdateUserAsync(UpdateUserDto updateUserDto);
+        Task<OperationResult<string>> UpdateUserAsync(string userName, UpdateUserDto updateUserDto);
         Task<UserDto> GetUserAsync(string email);
         Task<OperationResult<string>> AddUserToRoleAsync(AddUserToRoleDto addRoleDto);
         Task<IEnumerable<UserDto>> GetUsersAsync();

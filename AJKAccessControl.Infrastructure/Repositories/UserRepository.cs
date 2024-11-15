@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using AJKAccessControl.Domain.Entities;
 using AJKAccessControl.Domain.Responses;
 using Microsoft.AspNetCore.Identity;
@@ -63,7 +64,7 @@ namespace AJKAccessControl.Infrastructure.Repositories
             };
         }
 
-        public async Task<OperationResult<string>> UpdateUserAsync(User user, string password)
+        public async Task<OperationResult<string>> UpdateUserAsync(string userName, User user)
         {
             if (string.IsNullOrEmpty(user.UserName))
             {
@@ -80,9 +81,22 @@ namespace AJKAccessControl.Infrastructure.Repositories
                 };
             }
 
+            // Validate user properties
+            var validationErrors = ValidateUser(user);
+            if (validationErrors.Any())
+            {
+                return new OperationResult<string>
+                {
+                    Succeeded = false,
+                    Errors = validationErrors
+                };
+            }
+
             existingUser.FirstName = user.FirstName;
             existingUser.LastName = user.LastName;
             existingUser.Email = user.Email;
+            existingUser.PhoneNumber = user.PhoneNumber;
+            existingUser.Roles = user.Roles;
 
             var updateResult = await _userManager.UpdateAsync(existingUser);
             if (!updateResult.Succeeded)
@@ -94,22 +108,33 @@ namespace AJKAccessControl.Infrastructure.Repositories
                 };
             }
 
-            if (!string.IsNullOrEmpty(password))
-            {
-                var token = await _userManager.GeneratePasswordResetTokenAsync(existingUser);
-                var passwordResult = await _userManager.ResetPasswordAsync(existingUser, token, password);
-                return new OperationResult<string>
-                {
-                    Succeeded = passwordResult.Succeeded,
-                    Errors = passwordResult.Succeeded ? new List<string>() : passwordResult.Errors.Select(e => e.Description).ToList()
-                };
-            }
-
             return new OperationResult<string>
             {
                 Succeeded = true,
                 Errors = new List<string>()
             };
+        }
+
+        private List<string> ValidateUser(User user)
+        {
+            var errors = new List<string>();
+
+            if (string.IsNullOrEmpty(user.FirstName))
+            {
+                errors.Add("First name cannot be null or empty.");
+            }
+
+            if (string.IsNullOrEmpty(user.LastName))
+            {
+                errors.Add("Last name cannot be null or empty.");
+            }
+
+            if (string.IsNullOrEmpty(user.Email) || !new EmailAddressAttribute().IsValid(user.Email))
+            {
+                errors.Add("Invalid email address.");
+            }
+
+            return errors;
         }
 
         public async Task<OperationResult<string>> AddUserToRoleAsync(string userName, string role)
@@ -136,7 +161,7 @@ namespace AJKAccessControl.Infrastructure.Repositories
 
         public async Task<OperationResult<string>> ChangePasswordAsync(User user, string password)
         {
-            await  _userManager.RemovePasswordAsync(user);
+            await _userManager.RemovePasswordAsync(user);
             var result = await _userManager.AddPasswordAsync(user, password);
             return new OperationResult<string>
             {
