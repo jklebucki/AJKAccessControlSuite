@@ -19,10 +19,13 @@
 @switch (windowMode)
 {
     case "list":
-        <UsersList Users="users" AddUser="OpenCrateUserComponent" DeleteUser="OnDeleteUser" ChangePassword="OnChangePassword" />
+        <UsersList Users="users" AddUser="OpenCrateUserComponent" DeleteUser="OnDeleteUser" ChangePassword="OnChangePassword" EditUser="OnUserEdit"/>
         break;
     case "add":
         <CreateUser Close="CloseCreateUserComponent" />
+        break;
+    case "edit":
+        <UpdateUser UserName="@selectedUserName"/>
         break;
 }
 
@@ -76,7 +79,7 @@
 
 @code {
     private string userToDelete = string.Empty;
-
+    private string selectedUserName = string.Empty;
     private List<UserDto> users = new List<UserDto>();
     private string windowMode = "list";
     private List<string> errors = new List<string>();
@@ -135,6 +138,12 @@
         {
             await GetUserList();
         }
+    }
+
+    private void OnUserEdit(string userName)
+    {
+        selectedUserName = userName;
+        windowMode = "edit";
     }
 
     protected override async Task OnInitializedAsync()

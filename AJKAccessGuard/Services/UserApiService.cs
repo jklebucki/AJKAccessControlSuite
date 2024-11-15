@@ -48,7 +48,7 @@ namespace AJKAccessGuard.Services
             }
         }
 
-        public async Task<OperationResult<string>> UpdateUserAsync(UserDto user, string token)
+        public async Task<OperationResult<string>> UpdateUserAsync(UpdateUserDto user, string token)
         {
             try
             {

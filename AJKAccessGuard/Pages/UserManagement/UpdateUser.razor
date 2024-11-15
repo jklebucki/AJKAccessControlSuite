@@ -1,0 +1,135 @@
+@page "/update-user/{UserName}"
+@using AJKAccessControl.Shared.DTOs
+@using AJKAccessGuard.Services
+@using AJKAccessGuard.Pages.SharedComponents
+@inject IUsersApiService api
+@inject IUserStorageService userStorage
+@inject NavigationManager navigationManager
+
+<div class="update-user-form">
+    <h3>Aktualizuj użytkownika</h3>
+    <EditForm Model="existingUser" OnValidSubmit="OnUpdateUser">
+        <DataAnnotationsValidator />
+        
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <InputText id="email" @bind-Value="existingUser.Email" class="form-control modern-input" />
+            <ValidationMessage For="@(() => existingUser.Email)" />
+        </div>
+        
+        <div class="form-group">
+            <label for="phoneNumber">Numer telefonu:</label>
+            <InputText id="phoneNumber" @bind-Value="existingUser.PhoneNumber" class="form-control modern-input" />
+            <ValidationMessage For="@(() => existingUser.PhoneNumber)" />
+        </div>
+        
+        <div class="form-group">
+            <label for="firstName">Imię:</label>
+            <InputText id="firstName" @bind-Value="existingUser.FirstName" class="form-control modern-input" />
+            <ValidationMessage For="@(() => existingUser.FirstName)" />
+        </div>
+        
+        <div class="form-group">
+            <label for="lastName">Nazwisko:</label>
+            <InputText id="lastName" @bind-Value="existingUser.LastName" class="form-control modern-input" />
+            <ValidationMessage For="@(() => existingUser.LastName)" />
+        </div>
+        
+        @* <div class="form-group">
+            <label for="role">Rola:</label>
+            <InputSelect id="role" @bind-Value="existingUser.Role" class="form-select modern-input">
+                <option value="">Wybierz rolę</option>
+                <option value="Admin">Admin</option>
+                <option value="Supervisor">Supervisor</option>
+                <option value="User">User</option>
+            </InputSelect>
+            <ValidationMessage For="@(() => existingUser.Role)" />
+        </div> *@
+        
+        <div class="form-group d-flex justify-content-between mt-3">
+            <button type="submit" class="btn btn-outline-primary btn-form">Aktualizuj</button>
+            <button type="button" class="btn btn-outline-secondary btn-form" @onclick="OnCancel">Anuluj</button>
+        </div>
+    </EditForm>
+    <Errors ErrorList="errors" />
+</div>
+
+@code {
+    [Parameter]
+    public string UserName { get; set; } = string.Empty;
+
+    private UpdateUserDto existingUser = new UpdateUserDto();
+    private List<string> errors = new List<string>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadUserData();
+    }
+
+    private async Task LoadUserData()
+    {
+        var token = await userStorage.GetTokenAsync();
+        if (string.IsNullOrEmpty(token))
+        {
+            errors.Add("Brak dostępu do zasobów. Zaloguj się ponownie.");
+            return;
+        }
+
+        var userResult = await api.GetUserAsync(UserName, token);
+        if (userResult != null)
+        {
+            if (userResult.Succeeded)
+            {
+                var userDto = userResult.Data;
+                if (userDto == null)
+                {
+                    errors.Add("Nie znaleziono użytkownika.");
+                    return;
+                }
+                existingUser = new UpdateUserDto
+                {
+                    Email = userDto.Email ?? string.Empty,
+                    PhoneNumber = userDto.PhoneNumber,
+                    FirstName = userDto.FirstName,
+                    LastName = userDto.LastName,
+                    Roles = userDto.Roles
+                };
+            }
+            else
+            {
+                errors.AddRange(userResult.Errors);
+            }
+        }
+        else
+        {
+            errors.Add("Nie znaleziono użytkownika.");
+        }
+    }
+
+    private async Task OnUpdateUser()
+    {
+        errors.Clear();
+
+        var token = await userStorage.GetTokenAsync();
+        if (string.IsNullOrEmpty(token))
+        {
+            errors.Add("Brak dostępu do zasobów. Zaloguj się ponownie.");
+            return;
+        }
+
+        var result = await api.UpdateUserAsync(existingUser, token);
+        if (result.Succeeded)
+        {
+            navigationManager.NavigateTo("/users");
+        }
+        else
+        {
+            errors.AddRange(result.Errors);
+        }
+    }
+
+    private void OnCancel()
+    {
+        navigationManager.NavigateTo("/users");
+    }
+}
