@@ -48,26 +48,28 @@ namespace AJKAccessGuard.Services
             }
         }
 
-        public async Task<OperationResult<string>> UpdateUserAsync(UpdateUserDto user, string token)
+        public async Task<OperationResult<string>> UpdateUserAsync(string userName, UpdateUserDto user, string token)
         {
             try
             {
                 _httpClient.DefaultRequestHeaders.Clear();
                 _httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
-                var response = await _httpClient.PutAsJsonAsync($"api/account/update/{user.Email}", user);
+                var response = await _httpClient.PutAsJsonAsync($"api/account/update/{userName}", user);
                 response.EnsureSuccessStatusCode();
                 return new OperationResult<string> { Data = response.StatusCode == HttpStatusCode.NoContent ? "Success" : "Failed" };
             }
             catch (HttpRequestException ex)
             {
-                return new OperationResult<string> { Errors = [ex.InnerException == null ? ex.Message : ex.InnerException.Message] };
-            }
+                return new OperationResult<string> { Succeeded = false, Errors = [ex.InnerException == null ? ex.Message : ex.InnerException.Message] };
+            } 
         }
 
         public async Task<OperationResult<string>> DeleteUserAsync(UserDto user, string token)
         {
             try
             {
+                _httpClient.DefaultRequestHeaders.Clear();
+                _httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
                 var response = await _httpClient.DeleteAsync($"api/account/delete/{user.UserName}");
                 response.EnsureSuccessStatusCode();
                 return new OperationResult<string> { Data = response.StatusCode == HttpStatusCode.NoContent ? "Success" : "Failed" };

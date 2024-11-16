@@ -137,7 +137,8 @@ namespace AJKAccessControl.Application.Services
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 CreatedAt = user.CreatedAt,
-                UpdatedAt = user.UpdatedAt
+                UpdatedAt = user.UpdatedAt,
+                Roles = user.Roles
             };
         }
 

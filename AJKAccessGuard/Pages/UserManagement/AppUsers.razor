@@ -22,10 +22,10 @@
         <UsersList Users="users" AddUser="OpenCrateUserComponent" DeleteUser="OnDeleteUser" ChangePassword="OnChangePassword" EditUser="OnUserEdit"/>
         break;
     case "add":
-        <CreateUser Close="CloseCreateUserComponent" />
+        <CreateUser Close="CloseComponent" />
         break;
     case "edit":
-        <UpdateUser UserName="@selectedUserName"/>
+        <UpdateUser UserName="@selectedUserName" Close="CloseComponent" />
         break;
 }
 
@@ -131,7 +131,7 @@
         windowMode = "add";
     }
 
-    private async Task CloseCreateUserComponent(bool isSaved)
+    private async Task CloseComponent(bool isSaved)
     {
         windowMode = "list";
         if (isSaved)

@@ -99,6 +99,9 @@ namespace AJKAccessControl.Infrastructure.Repositories
             existingUser.Roles = user.Roles;
 
             var updateResult = await _userManager.UpdateAsync(existingUser);
+            await _userManager.RemoveFromRolesAsync(existingUser, await _userManager.GetRolesAsync(existingUser));
+            List<string> roles = user.Roles?.Where(role => role != null).Select(role => role!).ToList() ?? new List<string> { "User" };
+            await _userManager.AddToRolesAsync(existingUser, roles);
             if (!updateResult.Succeeded)
             {
                 return new OperationResult<string>
