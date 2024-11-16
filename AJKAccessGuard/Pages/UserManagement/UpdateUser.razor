@@ -76,9 +76,9 @@
 
     private void OnSelectionChanged(ChangeEventArgs e)
     {
-        var selected = new List<string>();
+        IList<string?> selected = new List<string?>();
 
-        var selectedValues = (IEnumerable<string>)e.Value;
+        var selectedValues = (IEnumerable<string>)e.Value!;
         foreach (var value in selectedValues)
         {
             selected.Add(value);
