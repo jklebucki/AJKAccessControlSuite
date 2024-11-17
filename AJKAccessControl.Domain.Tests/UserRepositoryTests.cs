@@ -1,9 +1,7 @@
 using AJKAccessControl.Domain.Entities;
 using AJKAccessControl.Domain.Tests.Providers;
-using AJKAccessControl.Infrastructure.Data;
 using AJKAccessControl.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Moq;
 
 namespace AJKAccessControl.Domain.Tests;

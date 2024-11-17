@@ -1,6 +1,5 @@
 using AJKAccessControl.Domain.Entities;
 using AJKAccessControl.Domain.Responses;
-using AJKAccessControl.Infrastructure.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;

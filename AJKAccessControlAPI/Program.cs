@@ -1,5 +1,6 @@
 using AJKAccessControl.Application.Services;
 using AJKAccessControl.Domain.Entities;
+using AJKAccessControl.Domain.Repositories;
 using AJKAccessControl.Infrastructure.Data;
 using AJKAccessControl.Infrastructure.Identity;
 using AJKAccessControl.Infrastructure.Repositories;
@@ -61,6 +62,8 @@ builder.Services.AddIdentity<User, IdentityRole<Guid>>(options =>
 // Register services and repositories
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IPersonRepository, PersonRepository>();
+builder.Services.AddScoped<IPersonService, PersonService>();
 
 // Configure DbContext with PostgreSQL
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
