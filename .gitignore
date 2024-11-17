@@ -43,10 +43,10 @@ ehthumbs.db
 node_modules/
 
 # Pliki tymczasowe Blazor/WebAssembly
-**/wwwroot/css/app.css
-**/wwwroot/css/app.css.map
-**/wwwroot/js/app.js
-**/wwwroot/js/app.js.map
+# **/wwwroot/css/app.css
+# **/wwwroot/css/app.css.map
+# **/wwwroot/js/app.js
+# **/wwwroot/js/app.js.map
 
 # Pliki pakietów NuGet
 packages/
