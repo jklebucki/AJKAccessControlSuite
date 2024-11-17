@@ -1,5 +1,6 @@
 ﻿using AJKAccessControl.Domain.Entities;
 using AJKAccessControl.Infrastructure.Repositories;
+using AJKAccessControl.Shared.DTOs;
 
 namespace AJKAccessControl.Application.Services
 {
@@ -12,29 +13,57 @@ namespace AJKAccessControl.Application.Services
             _personRepository = personRepository;
         }
 
-        public async Task<Person> GetByIdAsync(int id)
+        public async Task<PersonDTO> GetByIdAsync(int id)
         {
-            return await _personRepository.GetByIdAsync(id);
+            var person = await _personRepository.GetByIdAsync(id);
+            return person == null ? new PersonDTO() : MapToDTO(person);
         }
 
-        public async Task<IEnumerable<Person>> GetAllAsync()
+        public async Task<IEnumerable<PersonDTO>> GetAllAsync()
         {
-            return await _personRepository.GetAllAsync();
+            var persons = await _personRepository.GetAllAsync();
+            return persons.Select(MapToDTO);
         }
 
-        public async Task AddAsync(Person person)
+        public async Task AddAsync(PersonDTO personDTO)
         {
+            var person = MapToEntity(personDTO);
             await _personRepository.AddAsync(person);
         }
 
-        public async Task UpdateAsync(Person person)
+        public async Task UpdateAsync(PersonDTO personDTO)
         {
+            var person = MapToEntity(personDTO);
             await _personRepository.UpdateAsync(person);
         }
 
         public async Task DeleteAsync(int id)
         {
             await _personRepository.DeleteAsync(id);
+        }
+
+        private PersonDTO MapToDTO(Person person)
+        {
+            return new PersonDTO
+            {
+                Id = person.Id,
+                FirstName = person.FirstName,
+                LastName = person.LastName,
+                IsEmployee = person.IsEmployee,
+                Company = person.Company
+            };
+        }
+
+        private Person MapToEntity(PersonDTO personDTO)
+        {
+            return new Person
+            {
+                Id = personDTO.Id,
+                FirstName = personDTO.FirstName,
+                LastName = personDTO.LastName,
+                IsEmployee = personDTO.IsEmployee,
+                Company = personDTO.Company
+            };
         }
     }
 }
