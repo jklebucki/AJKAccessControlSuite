@@ -9,7 +9,7 @@ namespace AJKAccessControl.Infrastructure.Repositories
 {
     public class UserRepository : IUserRepository
     {
-        private readonly UserManager<User> _userManager = null!;
+        private readonly UserManager<User> _userManager;
 
         public UserRepository(UserManager<User> userManager)
         {
