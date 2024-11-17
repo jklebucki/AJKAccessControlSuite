@@ -1,12 +1,9 @@
-using Xunit;
-using Moq;
-using Microsoft.AspNetCore.Identity;
 using AJKAccessControl.Domain.Entities;
-using AJKAccessControl.Infrastructure.Repositories;
-using System.Threading.Tasks;
-using System.Collections.Generic;
-using System.Linq;
 using AJKAccessControl.Domain.Tests.Providers;
+using AJKAccessControl.Infrastructure.Repositories;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Moq;
 
 public class UserRepositoryTests
 {
@@ -27,23 +24,24 @@ public class UserRepositoryTests
         // Arrange
         var userName = "testuser";
         var user = new User { UserName = userName };
-        var users = new List<User> { user };
-        var mockUsers = new TestAsyncEnumerable<User>(users);
 
-        _userManagerMock.Setup(um => um.Users)
-            .Returns(mockUsers);
+        // Mock UserManager.FindByNameAsync
+        _userManagerMock.Setup(um => um.FindByNameAsync(userName))
+            .ReturnsAsync(user);
 
+        // Mock GetRolesAsync
         _userManagerMock.Setup(um => um.GetRolesAsync(user))
             .ReturnsAsync(new List<string> { "User" });
 
         // Act
-        var result = await _userRepository.GetUserByUserNamelAsync(userName);
+        var result = await _userRepository.GetUserByUserNameAsync(userName);
 
         // Assert
         Assert.NotNull(result);
-        Assert.Equal(userName, result.UserName);
-        Assert.Contains("User", result.Roles);
+        Assert.Equal(userName, result.UserName); // Check the user name
+        Assert.Contains("User", result.Roles);  // Check the roles
     }
+
 
     [Fact]
     public async Task CreateUserAsync_ValidUser_ReturnsSuccess()
@@ -150,10 +148,10 @@ public class UserRepositoryTests
     {
         // Arrange
         var users = new List<User>
-    {
-        new User { UserName = "user1" },
-        new User { UserName = "user2" }
-    };
+        {
+            new User { UserName = "user1" },
+            new User { UserName = "user2" }
+        };
 
         var mockUsers = new TestAsyncEnumerable<User>(users);
 

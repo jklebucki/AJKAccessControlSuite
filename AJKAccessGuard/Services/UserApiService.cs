@@ -61,7 +61,7 @@ namespace AJKAccessGuard.Services
             catch (HttpRequestException ex)
             {
                 return new OperationResult<string> { Succeeded = false, Errors = [ex.InnerException == null ? ex.Message : ex.InnerException.Message] };
-            } 
+            }
         }
 
         public async Task<OperationResult<string>> DeleteUserAsync(UserDto user, string token)

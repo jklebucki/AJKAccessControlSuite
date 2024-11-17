@@ -17,7 +17,7 @@ namespace AJKAccessControlAPI.Controllers
         }
 
         [HttpGet("get-user/{userName}")]
-        [Authorize (Roles = "Admin, Supervisor, User")]
+        [Authorize(Roles = "Admin, Supervisor, User")]
         public async Task<IActionResult> GetUser(string userName)
         {
             var user = await _userService.GetUserAsync(userName);

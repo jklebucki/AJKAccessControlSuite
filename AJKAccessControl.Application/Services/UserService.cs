@@ -37,7 +37,7 @@ namespace AJKAccessControl.Application.Services
 
         public async Task<OperationResult<string>> LoginUserAsync(LoginDto loginDto)
         {
-            var user = await _userRepository.GetUserByUserNamelAsync(loginDto.UserName);
+            var user = await _userRepository.GetUserByUserNameAsync(loginDto.UserName);
             if (user == null || !(await _userRepository.CheckPasswordAsync(user, loginDto.Password)).Succeeded)
             {
                 return new OperationResult<string> { Succeeded = false, Errors = new List<string> { "Invalid login attempt" } };
@@ -75,7 +75,7 @@ namespace AJKAccessControl.Application.Services
 
         public async Task<OperationResult<string>> DeleteUserAsync(DeleteUserDto deleteUserDto)
         {
-            var user = await _userRepository.GetUserByUserNamelAsync(deleteUserDto.UserName);
+            var user = await _userRepository.GetUserByUserNameAsync(deleteUserDto.UserName);
             if (user == null)
             {
                 return new OperationResult<string> { Succeeded = false, Errors = new List<string> { "User not found" } };
@@ -87,7 +87,7 @@ namespace AJKAccessControl.Application.Services
 
         public async Task<OperationResult<string>> ChangePasswordAsync(ChangePasswordDto changePasswordDto)
         {
-            var user = await _userRepository.GetUserByUserNamelAsync(changePasswordDto.UserName);
+            var user = await _userRepository.GetUserByUserNameAsync(changePasswordDto.UserName);
             if (user == null)
             {
                 return new OperationResult<string> { Succeeded = false, Errors = new List<string> { "User not found" } };
@@ -98,7 +98,7 @@ namespace AJKAccessControl.Application.Services
 
         public async Task<OperationResult<string>> UpdateUserAsync(string userName, UpdateUserDto updateUserDto)
         {
-            var user = await _userRepository.GetUserByUserNamelAsync(userName);
+            var user = await _userRepository.GetUserByUserNameAsync(userName);
             if (user == null)
             {
                 return new OperationResult<string> { Succeeded = false, Errors = new List<string> { "User not found" } };
@@ -123,7 +123,7 @@ namespace AJKAccessControl.Application.Services
 
         public async Task<UserDto> GetUserAsync(string userName)
         {
-            var user = await _userRepository.GetUserByUserNamelAsync(userName);
+            var user = await _userRepository.GetUserByUserNameAsync(userName);
             if (user == null)
             {
                 return new UserDto();

@@ -1,5 +1,5 @@
-using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations;
 
 namespace AJKAccessControl.Domain.Entities
 {
@@ -7,7 +7,7 @@ namespace AJKAccessControl.Domain.Entities
     {
         [Required]
         public override string UserName { get; set; } = string.Empty;
-        public override string? Email { get; set; }= string.Empty;
+        public override string? Email { get; set; } = string.Empty;
         public string FirstName { get; set; } = string.Empty;
         public string LastName { get; set; } = string.Empty;
         public DateTime CreatedAt { get; set; }

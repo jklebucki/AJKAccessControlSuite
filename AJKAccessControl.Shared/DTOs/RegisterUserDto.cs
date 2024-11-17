@@ -1,4 +1,3 @@
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 
@@ -16,7 +15,7 @@ namespace AJKAccessControl.Shared.DTOs
             get => _userName;
             set => _userName = value.ToUpper();
         }
-        
+
         [EmailAddress(ErrorMessage = "Niepoprawny format adresu email."), AllowNull]
         public string? Email { get; set; }
         public string PhoneNumber { get; set; } = string.Empty;

@@ -1,11 +1,6 @@
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using Microsoft.EntityFrameworkCore.Query;
-using System.Threading;
-using System.Threading.Tasks;
-using AJKAccessControl.Domain.Tests.Providers;
 
+namespace AJKAccessControl.Domain.Tests.Providers;
 public class TestAsyncEnumerable<T> : EnumerableQuery<T>, IAsyncEnumerable<T>, IQueryable<T>
 {
     public TestAsyncEnumerable(IEnumerable<T> enumerable)
@@ -22,4 +17,9 @@ public class TestAsyncEnumerable<T> : EnumerableQuery<T>, IAsyncEnumerable<T>, I
     }
 
     IQueryProvider IQueryable.Provider => new TestAsyncQueryProvider<T>(this);
+
+    public IEnumerator<T> GetEnumerator()
+    {
+        return this.AsEnumerable().GetEnumerator();
+    }
 }

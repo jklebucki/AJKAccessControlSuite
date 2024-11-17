@@ -1,7 +1,3 @@
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-
 namespace AJKAccessControl.Domain.Tests.Providers;
 public class TestAsyncEnumerator<T> : IAsyncEnumerator<T>
 {
@@ -9,10 +5,8 @@ public class TestAsyncEnumerator<T> : IAsyncEnumerator<T>
 
     public TestAsyncEnumerator(IEnumerator<T> inner)
     {
-        _inner = inner;
+        _inner = inner ?? throw new ArgumentNullException(nameof(inner));
     }
-
-    public T Current => _inner.Current;
 
     public ValueTask DisposeAsync()
     {
@@ -22,6 +16,8 @@ public class TestAsyncEnumerator<T> : IAsyncEnumerator<T>
 
     public ValueTask<bool> MoveNextAsync()
     {
-        return ValueTask.FromResult(_inner.MoveNext());
+        return new ValueTask<bool>(_inner.MoveNext());
     }
+
+    public T Current => _inner.Current;
 }

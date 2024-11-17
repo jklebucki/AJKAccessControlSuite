@@ -1,4 +1,3 @@
-using System.Security.Principal;
 using AJKAccessControl.Shared.DTOs;
 using Microsoft.JSInterop;
 

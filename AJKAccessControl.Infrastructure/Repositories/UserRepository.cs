@@ -1,8 +1,8 @@
-using System.ComponentModel.DataAnnotations;
 using AJKAccessControl.Domain.Entities;
 using AJKAccessControl.Domain.Responses;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 
 namespace AJKAccessControl.Infrastructure.Repositories
 {
@@ -15,9 +15,9 @@ namespace AJKAccessControl.Infrastructure.Repositories
             _userManager = userManager;
         }
 
-        public async Task<User> GetUserByUserNamelAsync(string userName)
+        public async Task<User> GetUserByUserNameAsync(string userName)
         {
-            var user = await _userManager.Users.FirstOrDefaultAsync(u => u.UserName == userName);
+            var user = await _userManager.FindByNameAsync(userName);
             if (user == null)
             {
                 return new User();
