@@ -153,21 +153,44 @@ public class UserRepositoryTests
         {
             new User { UserName = "user1" },
             new User { UserName = "user2" }
-        };
+        }.AsQueryable();
 
-        var mockUsers = new TestAsyncEnumerable<User>(users);
+        // Mockowanie IQueryable<User>
+        var mockUsers = new Mock<IQueryable<User>>();
+        mockUsers.As<IAsyncEnumerable<User>>()
+            .Setup(m => m.GetAsyncEnumerator(It.IsAny<CancellationToken>()))
+            .Returns(new TestAsyncEnumerator<User>(users.GetEnumerator()));
 
+        mockUsers.As<IQueryable<User>>()
+            .Setup(m => m.Provider)
+            .Returns(new TestAsyncQueryProvider<User>(users.Provider));
+
+        mockUsers.As<IQueryable<User>>()
+            .Setup(m => m.Expression)
+            .Returns(users.Expression);
+
+        mockUsers.As<IQueryable<User>>()
+            .Setup(m => m.ElementType)
+            .Returns(users.ElementType);
+
+        mockUsers.As<IQueryable<User>>()
+            .Setup(m => m.GetEnumerator())
+            .Returns(users.GetEnumerator());
+
+        // Ustawienie UserManager.Users
         _userManagerMock.Setup(um => um.Users)
-            .Returns(mockUsers);
+            .Returns(mockUsers.Object);
 
-            // Act
+        // Act
         var result = await _userRepository.GetUsersAsync();
 
-            // Assert
+        // Assert
+        Assert.NotNull(result);
         Assert.Equal(2, result.Count());
         Assert.Contains(result, u => u.UserName == "user1");
         Assert.Contains(result, u => u.UserName == "user2");
     }
+
 
     [Fact]
     public async Task ChangePasswordAsync_UserExists_ReturnsSuccess()
