@@ -1,0 +1,5 @@
+﻿cd AJKAccessControl.Infrastructure
+dotnet ef database drop -f -s ..\AJKAccessControlAPI
+dotnet ef migrations add Initial -s ..\AJKAccessControlAPI -o .\Data\Migrations
+dotnet ef migrations remove -s ..\AJKAccessControlAPI
+dotnet ef database update -s ..\AJKAccessControlAPI

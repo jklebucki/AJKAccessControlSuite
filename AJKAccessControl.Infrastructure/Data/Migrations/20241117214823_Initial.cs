@@ -1,9 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace AJKAccessControl.Infrastructure.Migrations
+namespace AJKAccessControl.Infrastructure.Data.Migrations
 {
     /// <inheritdoc />
     public partial class Initial : Migration
@@ -47,14 +48,14 @@ namespace AJKAccessControl.Infrastructure.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    UserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
+                    Email = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     FirstName = table.Column<string>(type: "text", nullable: false),
                     LastName = table.Column<string>(type: "text", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     Roles = table.Column<string[]>(type: "text[]", nullable: false),
-                    UserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
-                    Email = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     NormalizedEmail = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     EmailConfirmed = table.Column<bool>(type: "boolean", nullable: false),
                     PasswordHash = table.Column<string>(type: "text", nullable: true),
@@ -73,17 +74,19 @@ namespace AJKAccessControl.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Employees",
+                name: "Persons",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     FirstName = table.Column<string>(type: "text", nullable: false),
-                    LastName = table.Column<string>(type: "text", nullable: false)
+                    LastName = table.Column<string>(type: "text", nullable: false),
+                    IsEmployee = table.Column<bool>(type: "boolean", nullable: false),
+                    Company = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Employees", x => x.Id);
+                    table.PrimaryKey("PK_Persons", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -93,6 +96,8 @@ namespace AJKAccessControl.Infrastructure.Migrations
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     PlateNumber = table.Column<string>(type: "text", nullable: false),
+                    IsCompanyCar = table.Column<bool>(type: "boolean", nullable: false),
+                    Company = table.Column<string>(type: "text", nullable: false),
                     Owner = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
@@ -266,7 +271,7 @@ namespace AJKAccessControl.Infrastructure.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Employees");
+                name: "Persons");
 
             migrationBuilder.DropTable(
                 name: "Vehicles");

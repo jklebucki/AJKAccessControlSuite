@@ -3,21 +3,24 @@ using System;
 using AJKAccessControl.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace AJKAccessControl.Infrastructure.Migrations
+namespace AJKAccessControl.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(AccessControlDbContext))]
-    partial class AccessControlDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241117214823_Initial")]
+    partial class Initial
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.10")
+                .HasAnnotation("ProductVersion", "8.0.11")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -51,7 +54,7 @@ namespace AJKAccessControl.Infrastructure.Migrations
                     b.ToTable("AccessEntries");
                 });
 
-            modelBuilder.Entity("AJKAccessControl.Domain.Entities.Employee", b =>
+            modelBuilder.Entity("AJKAccessControl.Domain.Entities.Person", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -59,9 +62,16 @@ namespace AJKAccessControl.Infrastructure.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("Company")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("FirstName")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<bool>("IsEmployee")
+                        .HasColumnType("boolean");
 
                     b.Property<string>("LastName")
                         .IsRequired()
@@ -69,7 +79,7 @@ namespace AJKAccessControl.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Employees");
+                    b.ToTable("Persons");
                 });
 
             modelBuilder.Entity("AJKAccessControl.Domain.Entities.User", b =>
@@ -140,6 +150,7 @@ namespace AJKAccessControl.Infrastructure.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("UserName")
+                        .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)");
 
@@ -162,6 +173,13 @@ namespace AJKAccessControl.Infrastructure.Migrations
                         .HasColumnType("integer");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Company")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IsCompanyCar")
+                        .HasColumnType("boolean");
 
                     b.Property<string>("Owner")
                         .IsRequired()

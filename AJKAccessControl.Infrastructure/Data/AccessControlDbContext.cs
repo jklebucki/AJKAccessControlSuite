@@ -13,7 +13,7 @@ namespace AJKAccessControl.Infrastructure.Data
         {
         }
 
-        public DbSet<Employee> Employees { get; set; } = null!;
+        public DbSet<Person> Persons { get; set; } = null!;
         public DbSet<Vehicle> Vehicles { get; set; } = null!;
         public DbSet<AccessEntry> AccessEntries { get; set; } = null!;
 

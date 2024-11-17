@@ -1,5 +1,5 @@
 public enum EntitityType
 {
-    Employee,
+    Person,
     Vehicle
 }
