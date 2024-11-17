@@ -1,5 +1,6 @@
 using AJKAccessControl.Domain.Entities;
 using AJKAccessControl.Domain.Responses;
+using AJKAccessControl.Infrastructure.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
@@ -8,12 +9,18 @@ namespace AJKAccessControl.Infrastructure.Repositories
 {
     public class UserRepository : IUserRepository
     {
-        private readonly UserManager<User> _userManager;
+        private readonly UserManager<User> _userManager = null!;
+        //private readonly AccessControlDbContext _context = null!;
 
         public UserRepository(UserManager<User> userManager)
         {
             _userManager = userManager;
         }
+
+        //public UserRepository(AccessControlDbContext context)
+        //{
+        //    _context = context;
+        //}
 
         public async Task<User> GetUserByUserNameAsync(string userName)
         {
@@ -159,7 +166,7 @@ namespace AJKAccessControl.Infrastructure.Repositories
 
         public async Task<IEnumerable<User>> GetUsersAsync()
         {
-            return await _userManager.Users.ToListAsync();
+            return await Task.FromResult(_userManager.Users);
         }
 
         public async Task<OperationResult<string>> ChangePasswordAsync(User user, string password)

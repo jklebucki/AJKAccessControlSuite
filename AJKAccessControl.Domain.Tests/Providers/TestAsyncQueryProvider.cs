@@ -8,6 +8,11 @@ public class TestAsyncQueryProvider<TEntity> : IAsyncQueryProvider
 
     public TestAsyncQueryProvider(IQueryProvider inner)
     {
+        // Walidacja, aby upewniæ siê, ¿e _inner nie jest TestAsyncQueryProvider
+        if (inner is TestAsyncQueryProvider<TEntity>)
+        {
+            throw new InvalidOperationException("Nesting TestAsyncQueryProvider instances is not allowed.");
+        }
         _inner = inner ?? throw new ArgumentNullException(nameof(inner));
     }
 
@@ -37,38 +42,18 @@ public class TestAsyncQueryProvider<TEntity> : IAsyncQueryProvider
 
     public TResult Execute<TResult>(Expression expression)
     {
-        Console.WriteLine($"Expression: {expression}");
         if (expression == null)
             throw new ArgumentNullException(nameof(expression));
 
         return _inner.Execute<TResult>(expression);
     }
 
-    public IAsyncEnumerable<TResult> ExecuteAsync<TResult>(Expression expression)
+    public TResult ExecuteAsync<TResult>(Expression expression, CancellationToken cancellationToken)
     {
         if (expression == null)
             throw new ArgumentNullException(nameof(expression));
 
-        var result = _inner.Execute<IEnumerable<TResult>>(expression);
-        return new TestAsyncEnumerable<TResult>(result);
-    }
-
-    public Task<TResult> ExecuteAsync<TResult>(Expression expression, CancellationToken cancellationToken)
-    {
-        if (expression == null)
-            throw new ArgumentNullException(nameof(expression));
-
-        var result = Execute<TResult>(expression);
-        return Task.FromResult(result);
-    }
-
-    TResult IAsyncQueryProvider.ExecuteAsync<TResult>(Expression expression, CancellationToken cancellationToken)
-    {
-        if (expression == null)
-            throw new ArgumentNullException(nameof(expression));
-
-        return Execute<TResult>(expression);
+        // Bezpoœrednie wykonanie na _inner
+        return _inner.Execute<TResult>(expression);
     }
 }
-
-

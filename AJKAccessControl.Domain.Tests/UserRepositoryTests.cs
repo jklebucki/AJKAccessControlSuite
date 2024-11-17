@@ -1,10 +1,12 @@
 using AJKAccessControl.Domain.Entities;
 using AJKAccessControl.Domain.Tests.Providers;
+using AJKAccessControl.Infrastructure.Data;
 using AJKAccessControl.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Moq;
 
+namespace AJKAccessControl.Domain.Tests;
 public class UserRepositoryTests
 {
     private readonly Mock<UserManager<User>> _userManagerMock;
@@ -158,10 +160,10 @@ public class UserRepositoryTests
         _userManagerMock.Setup(um => um.Users)
             .Returns(mockUsers);
 
-        // Act
+            // Act
         var result = await _userRepository.GetUsersAsync();
 
-        // Assert
+            // Assert
         Assert.Equal(2, result.Count());
         Assert.Contains(result, u => u.UserName == "user1");
         Assert.Contains(result, u => u.UserName == "user2");

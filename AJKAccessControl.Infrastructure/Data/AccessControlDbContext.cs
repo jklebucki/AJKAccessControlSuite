@@ -13,9 +13,9 @@ namespace AJKAccessControl.Infrastructure.Data
         {
         }
 
-        public DbSet<Employee> Employees { get; set; }
-        public DbSet<Vehicle> Vehicles { get; set; }
-        public DbSet<AccessEntry> AccessEntries { get; set; }
+        public DbSet<Employee> Employees { get; set; } = null!;
+        public DbSet<Vehicle> Vehicles { get; set; } = null!;
+        public DbSet<AccessEntry> AccessEntries { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

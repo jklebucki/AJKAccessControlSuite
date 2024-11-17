@@ -13,13 +13,29 @@ public class TestAsyncEnumerable<T> : EnumerableQuery<T>, IAsyncEnumerable<T>, I
 
     public IAsyncEnumerator<T> GetAsyncEnumerator(CancellationToken cancellationToken = default)
     {
-        return new TestAsyncEnumerator<T>(this.AsEnumerable().GetEnumerator());
+        var enumerator = this.AsEnumerable().GetEnumerator();
+
+        // Unikniêcie rekurencji poprzez niezale¿ny enumerator
+        if (enumerator is TestAsyncEnumerator<T>)
+        {
+            throw new InvalidOperationException("Rekurencyjne wywo³anie GetAsyncEnumerator.");
+        }
+
+        return new TestAsyncEnumerator<T>(enumerator);
     }
 
     IQueryProvider IQueryable.Provider => new TestAsyncQueryProvider<T>(this);
 
     public IEnumerator<T> GetEnumerator()
     {
-        return this.AsEnumerable().GetEnumerator();
+        var enumerator = this.AsEnumerable().GetEnumerator();
+
+        // Zapobiegaj rekurencji w GetEnumerator
+        if (enumerator is TestAsyncEnumerator<T>)
+        {
+            throw new InvalidOperationException("Rekurencyjne wywo³anie GetEnumerator.");
+        }
+
+        return enumerator;
     }
 }
