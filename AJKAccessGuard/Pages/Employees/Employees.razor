@@ -1,0 +1,111 @@
+@page "/employees"
+@using AJKAccessControl.Domain.Entities
+@inject HttpClient Http
+@inject NavigationManager Navigation
+
+@if (showEmployeeComponent)
+{
+    <div class="centered-container mb-3 mt-3">
+    <h1 class="title-box">
+        Dodaj pracownika
+    </h1>
+</div>
+    <Employee IsEditMode="isEditMode" Person="person" OnSave="HandleSave" OnCreate="HandleCreate" />
+}
+else
+{
+    <div class="centered-container mb-3 mt-3">
+    <h1 class="title-box">
+        Pracownicy
+    </h1>
+</div>
+    <button class="btn btn-outline-primary mb-3" @onclick="CreateNewEmployee">Dodaj pracownika</button>
+    <table class="table table-striped table-hover">
+    <thead class="table-dark">
+        <tr>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Is Employee</th>
+            <th>Company</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var employee in EmployeeList)
+            {
+                <tr>
+                    <td>@employee.FirstName</td>
+                    <td>@employee.LastName</td>
+                    <td>@employee.IsEmployee</td>
+                    <td>@employee.Company</td>
+                    <td>
+                        <button class="btn btn-outline-primary btn-sm" @onclick="() => EditEmployee(employee)">Edytuj</button>
+                        <button class="btn btn-outline-danger btn-sm" @onclick="() => DeleteEmployee(employee.Id)">Usuń</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+
+@code {
+    private List<Person> EmployeeList = new List<Person>();
+    private Person person = new Person();
+    private bool showEmployeeComponent = false;
+    private bool isEditMode = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        EmployeeList = new List<Person>()
+        {
+        new Person() { Id = 1, FirstName = "Jan", LastName = "Kowalski", IsEmployee = true, Company = "AJK" },
+        new Person() { Id = 2, FirstName = "Anna", LastName = "Nowak", IsEmployee = true, Company = "AJK" }
+        };
+        await Task.CompletedTask;
+    }
+
+    private void CreateNewEmployee()
+    {
+        person = new Person();
+        isEditMode = false;
+        showEmployeeComponent = true;
+    }
+
+    private void EditEmployee(Person employee)
+    {
+        person = employee;
+        isEditMode = true;
+        showEmployeeComponent = true;
+    }
+
+    private async Task DeleteEmployee(int id)
+    {
+        //await Http.DeleteAsync($"api/employees/{id}");
+        //EmployeeList = await Http.GetFromJsonAsync<List<Person>>("api/employees");
+        EmployeeList.RemoveAll(e => e.Id == id);
+        showEmployeeComponent = false;
+        await Task.CompletedTask;
+    }
+
+    private async Task HandleSave(Person employee)
+    {
+        //await Http.PutAsJsonAsync($"api/employees/{employee.Id}", employee);
+        //EmployeeList = await Http.GetFromJsonAsync<List<Person>>("api/employees");
+        var index = EmployeeList.FindIndex(e => e.Id == employee.Id);
+        EmployeeList[index] = employee;
+        showEmployeeComponent = false;
+        await Task.CompletedTask;
+    }
+
+    private async Task HandleCreate(Person employee)
+    {
+        //await Http.PostAsJsonAsync("api/employees", employee);
+        //EmployeeList = await Http.GetFromJsonAsync<List<Person>>("api/employees");
+        var employeeId = EmployeeList.Select(e => e.Id).Max() + 1;
+        employee.Id = employeeId;
+        EmployeeList.Add(employee);
+        showEmployeeComponent = false;
+        await Task.CompletedTask;
+    }
+}

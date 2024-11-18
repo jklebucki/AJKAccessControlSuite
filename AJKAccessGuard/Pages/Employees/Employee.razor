@@ -1,0 +1,62 @@
+@page "/employees/employee"
+@using AJKAccessControl.Domain.Entities
+
+
+<div class="d-flex justify-content-center">
+    <EditForm Model="Person" OnValidSubmit="HandleValidSubmit" class="w-50">
+        <DataAnnotationsValidator />
+        <ValidationSummary class="text-danger" />
+
+        <div class="mb-3 row">
+            <label for="firstName" class="col-sm-4 col-form-label">Imię</label>
+            <div class="col-sm-8">
+                <InputText id="firstName" class="form-control" @bind-Value="Person.FirstName" />
+            </div>
+        </div>
+        <div class="mb-3 row">
+            <label for="lastName" class="col-sm-4 col-form-label">Nazwisko</label>
+            <div class="col-sm-8">
+                <InputText id="lastName" class="form-control" @bind-Value="Person.LastName" />
+            </div>
+        </div>
+        <div class="mb-3 row">
+            <div class="col-sm-4"></div>
+            <div class="col-sm-8 form-check">
+                <InputCheckbox id="isEmployee" class="form-check-input" @bind-Value="Person.IsEmployee" />
+                <label for="isEmployee" class="form-check-label">Czy pracownik</label>
+            </div>
+        </div>
+        <div class="mb-3 row">
+            <label for="company" class="col-sm-4 col-form-label">Firma</label>
+            <div class="col-sm-8">
+                <InputText id="company" class="form-control" @bind-Value="Person.Company" />
+            </div>
+        </div>
+
+        <div class="mb-3 row">
+            <div class="col-sm-4"></div>
+            <div class="col-sm-8">
+                <button type="submit" class="btn btn-outline-primary">@((IsEditMode ? "Zapisz" : "Dodaj"))</button>
+            </div>
+        </div>
+    </EditForm>
+</div>
+
+@code {
+    [Parameter] public Person Person { get; set; } = new Person();
+    [Parameter] public EventCallback<Person> OnSave { get; set; }
+    [Parameter] public EventCallback<Person> OnCreate { get; set; }
+    [Parameter] public bool IsEditMode { get; set; }
+
+    private async Task HandleValidSubmit()
+    {
+        if (IsEditMode)
+        {
+            await OnSave.InvokeAsync(Person);
+        }
+        else
+        {
+            await OnCreate.InvokeAsync(Person);
+        }
+    }
+}
