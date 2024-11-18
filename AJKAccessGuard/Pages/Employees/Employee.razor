@@ -20,10 +20,9 @@
             </div>
         </div>
         <div class="mb-3 row">
-            <div class="col-sm-4"></div>
-            <div class="col-sm-8 form-check">
+            <label for="isEmployee" class="col-sm-4 col-form-label">Czy pracownik</label>
+            <div class="col-sm-8">
                 <InputCheckbox id="isEmployee" class="form-check-input" @bind-Value="Person.IsEmployee" />
-                <label for="isEmployee" class="form-check-label">Czy pracownik</label>
             </div>
         </div>
         <div class="mb-3 row">
@@ -37,6 +36,7 @@
             <div class="col-sm-4"></div>
             <div class="col-sm-8">
                 <button type="submit" class="btn btn-outline-primary">@((IsEditMode ? "Zapisz" : "Dodaj"))</button>
+                <button type="button" class="btn btn-outline-secondary" @onclick="Cancel">Anuluj</button>
             </div>
         </div>
     </EditForm>
@@ -46,6 +46,7 @@
     [Parameter] public Person Person { get; set; } = new Person();
     [Parameter] public EventCallback<Person> OnSave { get; set; }
     [Parameter] public EventCallback<Person> OnCreate { get; set; }
+    [Parameter] public EventCallback OnCancel { get; set; }
     [Parameter] public bool IsEditMode { get; set; }
 
     private async Task HandleValidSubmit()
@@ -58,5 +59,10 @@
         {
             await OnCreate.InvokeAsync(Person);
         }
+    }
+
+    private async Task Cancel()
+    {
+        await OnCancel.InvokeAsync();
     }
 }

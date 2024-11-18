@@ -7,10 +7,10 @@
 {
     <div class="centered-container mb-3 mt-3">
     <h1 class="title-box">
-        Dodaj pracownika
+        @(isEditMode ? "Edytuj pracownika" : "Dodaj pracownika")
     </h1>
 </div>
-    <Employee IsEditMode="isEditMode" Person="person" OnSave="HandleSave" OnCreate="HandleCreate" />
+    <Employee OnCancel="Cancel" IsEditMode="isEditMode" Person="person" OnSave="HandleSave" OnCreate="HandleCreate" />
 }
 else
 {
@@ -23,11 +23,11 @@ else
     <table class="table table-striped table-hover">
     <thead class="table-dark">
         <tr>
-            <th>First Name</th>
-            <th>Last Name</th>
-            <th>Is Employee</th>
-            <th>Company</th>
-            <th>Actions</th>
+            <th>Imię</th>
+            <th>Nazwisko</th>
+            <th>Czy pracownik</th>
+            <th>Firma</th>
+            <th>Akcje</th>
         </tr>
     </thead>
     <tbody>
@@ -36,7 +36,11 @@ else
                 <tr>
                     <td>@employee.FirstName</td>
                     <td>@employee.LastName</td>
-                    <td>@employee.IsEmployee</td>
+                    <td>
+                        <span class="badge @(employee.IsEmployee ? "bg-success" : "bg-secondary")">
+                            @(employee.IsEmployee ? "TAK" : "NIE")
+                        </span>
+                    </td>
                     <td>@employee.Company</td>
                     <td>
                         <button class="btn btn-outline-primary btn-sm" @onclick="() => EditEmployee(employee)">Edytuj</button>
@@ -107,5 +111,9 @@ else
         EmployeeList.Add(employee);
         showEmployeeComponent = false;
         await Task.CompletedTask;
+    }
+    private void Cancel()
+    {
+        showEmployeeComponent = false;
     }
 }
