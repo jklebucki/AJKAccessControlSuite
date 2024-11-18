@@ -2,8 +2,8 @@
 @using AJKAccessControl.Domain.Entities
 
 
-<div class="d-flex justify-content-center">
-    <EditForm Model="Person" OnValidSubmit="HandleValidSubmit" class="w-50">
+<div class="form-container">
+    <EditForm Model="Person" OnValidSubmit="HandleValidSubmit">
         <DataAnnotationsValidator />
         <ValidationSummary class="text-danger" />
 
