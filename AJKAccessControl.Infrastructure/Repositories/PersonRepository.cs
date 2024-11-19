@@ -1,9 +1,8 @@
 ﻿using AJKAccessControl.Domain.Entities;
 using AJKAccessControl.Infrastructure.Data;
-using AJKAccessControl.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 
-namespace AJKAccessControl.Domain.Repositories
+namespace AJKAccessControl.Infrastructure.Repositories
 {
     public class PersonRepository : IPersonRepository
     {
@@ -26,12 +25,14 @@ namespace AJKAccessControl.Domain.Repositories
 
         public async Task AddAsync(Person person)
         {
+            person.CreatedAt = DateTime.Now;
             await _context.Persons.AddAsync(person);
             await _context.SaveChangesAsync();
         }
 
         public async Task UpdateAsync(Person person)
         {
+            person.UpdatedAt = DateTime.Now;
             _context.Persons.Update(person);
             await _context.SaveChangesAsync();
         }

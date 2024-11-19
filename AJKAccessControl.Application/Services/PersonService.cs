@@ -50,7 +50,10 @@ namespace AJKAccessControl.Application.Services
                 FirstName = person.FirstName,
                 LastName = person.LastName,
                 IsEmployee = person.IsEmployee,
-                Company = person.Company
+                Company = person.Company,
+                CreatedBy = person.CreatedBy,
+                CreatedAt = person.CreatedAt,
+                UpdatedAt = person.UpdatedAt
             };
         }
 
@@ -62,7 +65,10 @@ namespace AJKAccessControl.Application.Services
                 FirstName = personDTO.FirstName,
                 LastName = personDTO.LastName,
                 IsEmployee = personDTO.IsEmployee,
-                Company = personDTO.Company
+                Company = personDTO.Company,
+                CreatedBy = personDTO.CreatedBy,
+                CreatedAt = personDTO.CreatedAt,
+                UpdatedAt = personDTO.UpdatedAt
             };
         }
     }

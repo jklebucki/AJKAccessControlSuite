@@ -17,6 +17,8 @@ builder.Services.AddScoped(sp => new HttpClient
 builder.Services.AddScoped<IUsersApiService, UserApiService>();
 builder.Services.AddScoped<IUserStorageService, UserStorageService>();
 builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
+builder.Services.AddScoped<IPersonsApiService, PersonsApiService>();
+
 builder.Services.AddAuthorizationCore();
 
 await builder.Build().RunAsync();

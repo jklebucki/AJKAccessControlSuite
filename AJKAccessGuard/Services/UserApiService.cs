@@ -98,7 +98,6 @@ namespace AJKAccessGuard.Services
 
         public async Task<OperationResult<string>> RegisterUserAsync(RegisterUserDto registerDto, string token)
         {
-
             var response = await _httpClient.PostAsJsonAsync("api/account/register", registerDto);
             try
             {

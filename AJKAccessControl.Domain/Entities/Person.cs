@@ -21,6 +21,8 @@ namespace AJKAccessControl.Domain.Entities
                 _company = value;
             }
         }
-
+        public string CreatedBy { get; set; } = string.Empty;
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
+        public DateTime? UpdatedAt { get; set; }
     }
 }
