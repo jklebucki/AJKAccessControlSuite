@@ -1,5 +1,4 @@
-﻿using AJKAccessControl.Application.Services;
-using AJKAccessControl.Shared.DTOs;
+﻿using AJKAccessControl.Shared.DTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,50 +17,66 @@ namespace AJKAccessControlAPI.Controllers
 
         [HttpGet("{id}")]
         [Authorize(Roles = "Admin, Supervisor, User")]
-        public async Task<ActionResult<PersonDTO>> GetPerson(int id)
+        public async Task<IActionResult> GetPerson(int id)
         {
-            var person = await _personService.GetByIdAsync(id);
-            if (person == null)
+            var result = await _personService.GetByIdAsync(id);
+            if (!result.Succeeded)
             {
-                return NotFound();
+                return NotFound(string.Join("|", result.Errors));
             }
-            return Ok(person);
+            return Ok(result.Data);
         }
 
         [HttpGet]
         [Authorize(Roles = "Admin, Supervisor, User")]
-        public async Task<ActionResult<IEnumerable<PersonDTO>>> GetPersons()
+        public async Task<IActionResult> GetPersons()
         {
-            var persons = await _personService.GetAllAsync();
-            return Ok(persons);
+            var result = await _personService.GetAllAsync();
+            if (!result.Succeeded)
+            {
+                return NotFound(string.Join("|", result.Errors));
+            }
+            return Ok(result.Data);
         }
 
         [HttpPost]
         [Authorize(Roles = "Admin, Supervisor, User")]
-        public async Task<ActionResult> AddPerson([FromBody] PersonDTO personDTO)
+        public async Task<IActionResult> AddPerson([FromBody] PersonDTO personDTO)
         {
-            await _personService.AddAsync(personDTO);
+            var result = await _personService.AddAsync(personDTO);
+            if (!result.Succeeded)
+            {
+                return BadRequest(string.Join("|", result.Errors));
+            }
             return CreatedAtAction(nameof(GetPerson), new { id = personDTO.Id }, personDTO);
         }
 
         [HttpPut("{id}")]
         [Authorize(Roles = "Admin, Supervisor, User")]
-        public async Task<ActionResult> UpdatePerson(int id, [FromBody] PersonDTO personDTO)
+        public async Task<IActionResult> UpdatePerson(int id, [FromBody] PersonDTO personDTO)
         {
             if (id != personDTO.Id)
             {
-                return BadRequest();
+                return BadRequest("ID mismatch");
             }
 
-            await _personService.UpdateAsync(personDTO);
+            var result = await _personService.UpdateAsync(personDTO);
+            if (!result.Succeeded)
+            {
+                return BadRequest(string.Join("|", result.Errors));
+            }
             return NoContent();
         }
 
         [HttpDelete("{id}")]
         [Authorize(Roles = "Admin, Supervisor, User")]
-        public async Task<ActionResult> DeletePerson(int id)
+        public async Task<IActionResult> DeletePerson(int id)
         {
-            await _personService.DeleteAsync(id);
+            var result = await _personService.DeleteAsync(id);
+            if (!result.Succeeded)
+            {
+                return BadRequest(string.Join("|", result.Errors));
+            }
             return NoContent();
         }
     }

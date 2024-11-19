@@ -1,4 +1,5 @@
 ﻿using AJKAccessControl.Domain.Entities;
+using AJKAccessControl.Domain.Responses;
 using AJKAccessControl.Infrastructure.Repositories;
 using AJKAccessControl.Shared.DTOs;
 
@@ -13,33 +14,74 @@ namespace AJKAccessControl.Application.Services
             _personRepository = personRepository;
         }
 
-        public async Task<PersonDTO> GetByIdAsync(int id)
+        public async Task<OperationResult<PersonDTO>> GetByIdAsync(int id)
         {
             var person = await _personRepository.GetByIdAsync(id);
-            return person == null ? new PersonDTO() : MapToDTO(person);
+            if (person == null)
+            {
+                return new OperationResult<PersonDTO> { Succeeded = false, Errors = new List<string> { "Person not found" } };
+            }
+            return new OperationResult<PersonDTO> { Succeeded = true, Data = MapToDTO(person) };
         }
 
-        public async Task<IEnumerable<PersonDTO>> GetAllAsync()
+        public async Task<OperationResult<IEnumerable<PersonDTO>>> GetAllAsync()
         {
             var persons = await _personRepository.GetAllAsync();
-            return persons.Select(MapToDTO);
+            return new OperationResult<IEnumerable<PersonDTO>> { Succeeded = true, Data = persons.Select(MapToDTO) };
         }
 
-        public async Task AddAsync(PersonDTO personDTO)
+        public async Task<OperationResult<string>> AddAsync(PersonDTO personDTO)
         {
-            var person = MapToEntity(personDTO);
-            await _personRepository.AddAsync(person);
+            try
+            {
+                var person = MapToEntity(personDTO);
+                await _personRepository.AddAsync(person);
+            }
+            catch (Exception ex)
+            {
+                return new OperationResult<string> { Succeeded = false, Errors = new List<string> { ex.Message } };
+            }
+
+            return new OperationResult<string> { Succeeded = true, Data = "Person added successfully" };
         }
 
-        public async Task UpdateAsync(PersonDTO personDTO)
+        public async Task<OperationResult<string>> UpdateAsync(PersonDTO personDTO)
         {
-            var person = MapToEntity(personDTO);
-            await _personRepository.UpdateAsync(person);
+            var person = await _personRepository.GetByIdAsync(personDTO.Id);
+            if (person == null)
+            {
+                return new OperationResult<string> { Succeeded = false, Errors = new List<string> { "Person not found" } };
+            }
+
+            try
+            {
+                person.FirstName = personDTO.FirstName;
+                person.LastName = personDTO.LastName;
+                person.IsEmployee = personDTO.IsEmployee;
+                person.Company = personDTO.Company;
+                person.CreatedBy = personDTO.CreatedBy;
+                person.CreatedAt = personDTO.CreatedAt;
+                person.UpdatedAt = personDTO.UpdatedAt;
+                await _personRepository.UpdateAsync(person);
+            }
+            catch (Exception ex)
+            {
+                return new OperationResult<string> { Succeeded = false, Errors = new List<string> { ex.Message } };
+            }
+
+            return new OperationResult<string> { Succeeded = true, Data = "Person updated successfully" };
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task<OperationResult<string>> DeleteAsync(int id)
         {
+            var person = await _personRepository.GetByIdAsync(id);
+            if (person == null)
+            {
+                return new OperationResult<string> { Succeeded = false, Errors = new List<string> { "Person not found" } };
+            }
+
             await _personRepository.DeleteAsync(id);
+            return new OperationResult<string> { Succeeded = true, Data = "Person deleted successfully" };
         }
 
         private PersonDTO MapToDTO(Person person)
