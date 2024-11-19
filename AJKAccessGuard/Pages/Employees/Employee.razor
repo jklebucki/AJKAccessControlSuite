@@ -1,5 +1,6 @@
 @page "/employees/employee"
 @using AJKAccessControl.Domain.Entities
+@using AJKAccessControl.Shared.DTOs
 
 
 <div class="form-container">
@@ -43,9 +44,9 @@
 </div>
 
 @code {
-    [Parameter] public Person Person { get; set; } = new Person();
-    [Parameter] public EventCallback<Person> OnSave { get; set; }
-    [Parameter] public EventCallback<Person> OnCreate { get; set; }
+    [Parameter] public PersonDTO Person { get; set; } = new PersonDTO();
+    [Parameter] public EventCallback<PersonDTO> OnSave { get; set; }
+    [Parameter] public EventCallback<PersonDTO> OnCreate { get; set; }
     [Parameter] public EventCallback OnCancel { get; set; }
     [Parameter] public bool IsEditMode { get; set; }
 

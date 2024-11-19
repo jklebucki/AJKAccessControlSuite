@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace AJKAccessControl.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(AccessControlDbContext))]
-    [Migration("20241117214823_Initial")]
+    [Migration("20241119222213_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -66,6 +66,13 @@ namespace AJKAccessControl.Infrastructure.Data.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("FirstName")
                         .IsRequired()
                         .HasColumnType("text");
@@ -76,6 +83,9 @@ namespace AJKAccessControl.Infrastructure.Data.Migrations
                     b.Property<string>("LastName")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
 
@@ -178,6 +188,13 @@ namespace AJKAccessControl.Infrastructure.Data.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<bool>("IsCompanyCar")
                         .HasColumnType("boolean");
 
@@ -188,6 +205,9 @@ namespace AJKAccessControl.Infrastructure.Data.Migrations
                     b.Property<string>("PlateNumber")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
 

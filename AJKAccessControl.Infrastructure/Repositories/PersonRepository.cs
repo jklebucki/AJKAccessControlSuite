@@ -25,14 +25,14 @@ namespace AJKAccessControl.Infrastructure.Repositories
 
         public async Task AddAsync(Person person)
         {
-            person.CreatedAt = DateTime.Now;
+            person.CreatedAt = DateTime.UtcNow;
             await _context.Persons.AddAsync(person);
             await _context.SaveChangesAsync();
         }
 
         public async Task UpdateAsync(Person person)
         {
-            person.UpdatedAt = DateTime.Now;
+            person.UpdatedAt = DateTime.UtcNow;
             _context.Persons.Update(person);
             await _context.SaveChangesAsync();
         }
