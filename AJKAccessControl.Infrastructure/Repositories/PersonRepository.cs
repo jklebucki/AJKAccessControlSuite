@@ -23,18 +23,20 @@ namespace AJKAccessControl.Infrastructure.Repositories
             return await _context.Persons.ToListAsync();
         }
 
-        public async Task AddAsync(Person person)
+        public async Task<int> AddAsync(Person person)
         {
             person.CreatedAt = DateTime.UtcNow;
             await _context.Persons.AddAsync(person);
             await _context.SaveChangesAsync();
+            return person.Id;
         }
 
-        public async Task UpdateAsync(Person person)
+        public async Task<int> UpdateAsync(Person person)
         {
             person.UpdatedAt = DateTime.UtcNow;
             _context.Persons.Update(person);
             await _context.SaveChangesAsync();
+            return person.Id;
         }
 
         public async Task DeleteAsync(int id)

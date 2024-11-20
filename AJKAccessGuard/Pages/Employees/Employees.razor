@@ -135,20 +135,26 @@ else
             errors.Add("Brak dostępu do zasobów. Zaloguj się ponownie.");
             return;
         }
-
-        var result = await PersonsApiService.UpdatePersonAsync(employee.Id, employee, token);
-        if (result.Succeeded)
+        try
         {
-            var index = EmployeeList.FindIndex(e => e.Id == employee.Id);
-            if (index != -1)
+            var result = await PersonsApiService.UpdatePersonAsync(employee.Id, employee, token);
+            if (result.Succeeded)
             {
-                EmployeeList[index] = employee;
+                var index = EmployeeList.FindIndex(e => e.Id == employee.Id);
+                if (index != -1)
+                {
+                    EmployeeList[index] = employee;
+                }
+                showEmployeeComponent = false;
             }
-            showEmployeeComponent = false;
+            else
+            {
+                errors.AddRange(result.Errors);
+            }
         }
-        else
+        catch (Exception ex)
         {
-            errors.AddRange(result.Errors);
+            errors.Add(ex.Message);
         }
     }
 
@@ -166,7 +172,18 @@ else
         var result = await PersonsApiService.AddPersonAsync(employee, token);
         if (result.Succeeded)
         {
-            EmployeeList.Add(employee);
+            var id = 0;
+            int.TryParse(result.Data, out id);
+            employee.Id = id;
+            if (id != 0)
+            {
+                EmployeeList.Add(employee);
+            }
+            else
+            {
+                await LoadEmployees();
+            }
+
             showEmployeeComponent = false;
         }
         else

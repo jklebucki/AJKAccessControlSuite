@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace AJKAccessControl.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(AccessControlDbContext))]
-    [Migration("20241119222213_Initial")]
+    [Migration("20241120083631_Initial")]
     partial class Initial
     {
         /// <inheritdoc />

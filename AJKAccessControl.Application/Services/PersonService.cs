@@ -35,14 +35,13 @@ namespace AJKAccessControl.Application.Services
             try
             {
                 var person = MapToEntity(personDTO);
-                await _personRepository.AddAsync(person);
+                var personId = await _personRepository.AddAsync(person);
+                return new OperationResult<string> { Succeeded = true, Data = $"{personId}" };
             }
             catch (Exception ex)
             {
                 return new OperationResult<string> { Succeeded = false, Errors = new List<string> { ex.Message } };
             }
-
-            return new OperationResult<string> { Succeeded = true, Data = "Person added successfully" };
         }
 
         public async Task<OperationResult<string>> UpdateAsync(PersonDTO personDTO)
@@ -62,14 +61,14 @@ namespace AJKAccessControl.Application.Services
                 person.CreatedBy = personDTO.CreatedBy;
                 person.CreatedAt = personDTO.CreatedAt;
                 person.UpdatedAt = personDTO.UpdatedAt;
-                await _personRepository.UpdateAsync(person);
+                var personId = await _personRepository.UpdateAsync(person);
+                return new OperationResult<string> { Succeeded = true, Data = $"{personId}" };
             }
             catch (Exception ex)
             {
                 return new OperationResult<string> { Succeeded = false, Errors = new List<string> { ex.Message } };
             }
 
-            return new OperationResult<string> { Succeeded = true, Data = "Person updated successfully" };
         }
 
         public async Task<OperationResult<string>> DeleteAsync(int id)

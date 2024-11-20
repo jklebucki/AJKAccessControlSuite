@@ -1,6 +1,5 @@
 using AJKAccessControl.Domain.Responses;
 using AJKAccessControl.Shared.DTOs;
-using System.Net;
 using System.Net.Http.Json;
 
 namespace AJKAccessGuard.Services
@@ -39,15 +38,15 @@ namespace AJKAccessGuard.Services
             }
             catch (HttpRequestException ex)
             {
-                return new OperationResult<UserDto> { Succeeded = false, Errors = new[] { ex.InnerException?.Message ?? ex.Message } };
+                return new OperationResult<UserDto> { Succeeded = false, Errors = [ex.InnerException?.Message ?? ex.Message] };
             }
             catch (TaskCanceledException ex)
             {
-                return new OperationResult<UserDto> { Succeeded = false, Errors = new[] { "Request timed out.", ex.Message } };
+                return new OperationResult<UserDto> { Succeeded = false, Errors = ["Request timed out.", ex.Message] };
             }
             catch (Exception ex)
             {
-                return new OperationResult<UserDto> { Succeeded = false, Errors = new[] { ex.Message } };
+                return new OperationResult<UserDto> { Succeeded = false, Errors = [ex.Message] };
             }
         }
 
@@ -61,15 +60,15 @@ namespace AJKAccessGuard.Services
             }
             catch (HttpRequestException ex)
             {
-                return new OperationResult<IEnumerable<UserDto>> { Succeeded = false, Errors = new[] { ex.InnerException?.Message ?? ex.Message } };
+                return new OperationResult<IEnumerable<UserDto>> { Succeeded = false, Errors = [ex.InnerException?.Message ?? ex.Message] };
             }
             catch (TaskCanceledException ex)
             {
-                return new OperationResult<IEnumerable<UserDto>> { Succeeded = false, Errors = new[] { "Request timed out.", ex.Message } };
+                return new OperationResult<IEnumerable<UserDto>> { Succeeded = false, Errors = ["Request timed out.", ex.Message] };
             }
             catch (Exception ex)
             {
-                return new OperationResult<IEnumerable<UserDto>> { Succeeded = false, Errors = new[] { ex.Message } };
+                return new OperationResult<IEnumerable<UserDto>> { Succeeded = false, Errors = [ex.Message] };
             }
         }
 
@@ -81,20 +80,20 @@ namespace AJKAccessGuard.Services
             {
                 response = await _httpClient.PutAsJsonAsync($"api/account/update/{userName}", user);
                 response.EnsureSuccessStatusCode();
-                return new OperationResult<string> { Data = response.StatusCode == HttpStatusCode.NoContent ? "Success" : "Failed" };
+                return new OperationResult<string> { Succeeded = true, Data = await response.Content.ReadAsStringAsync() };
             }
             catch (HttpRequestException ex)
             {
                 var responseMessages = (await response.Content.ReadAsStringAsync()).Split('|');
-                return new OperationResult<string> { Succeeded = false, Errors = responseMessages.Length > 0 ? responseMessages : new[] { ex.Message } };
+                return new OperationResult<string> { Succeeded = false, Errors = responseMessages.Length > 0 ? responseMessages : [ex.Message] };
             }
             catch (TaskCanceledException ex)
             {
-                return new OperationResult<string> { Succeeded = false, Errors = new[] { "Request timed out.", ex.Message } };
+                return new OperationResult<string> { Succeeded = false, Errors = ["Request timed out.", ex.Message] };
             }
             catch (Exception ex)
             {
-                return new OperationResult<string> { Succeeded = false, Errors = new[] { ex.Message } };
+                return new OperationResult<string> { Succeeded = false, Errors = [ex.Message] };
             }
         }
 
@@ -106,20 +105,20 @@ namespace AJKAccessGuard.Services
             {
                 response = await _httpClient.DeleteAsync($"api/account/delete/{user.UserName}");
                 response.EnsureSuccessStatusCode();
-                return new OperationResult<string> { Data = response.StatusCode == HttpStatusCode.NoContent ? "Success" : "Failed" };
+                return new OperationResult<string> { Succeeded = true, Data = await response.Content.ReadAsStringAsync() };
             }
             catch (HttpRequestException ex)
             {
                 var responseMessages = (await response.Content.ReadAsStringAsync()).Split('|');
-                return new OperationResult<string> { Succeeded = false, Errors = responseMessages.Length > 0 ? responseMessages : new[] { ex.Message } };
+                return new OperationResult<string> { Succeeded = false, Errors = responseMessages.Length > 0 ? responseMessages : [ex.Message] };
             }
             catch (TaskCanceledException ex)
             {
-                return new OperationResult<string> { Succeeded = false, Errors = new[] { "Request timed out.", ex.Message } };
+                return new OperationResult<string> { Succeeded = false, Errors = ["Request timed out.", ex.Message] };
             }
             catch (Exception ex)
             {
-                return new OperationResult<string> { Succeeded = false, Errors = new[] { ex.Message } };
+                return new OperationResult<string> { Succeeded = false, Errors = [ex.Message] };
             }
         }
 
@@ -131,20 +130,20 @@ namespace AJKAccessGuard.Services
             {
                 response = await _httpClient.PutAsJsonAsync("api/account/change-password", changePasswordDto);
                 response.EnsureSuccessStatusCode();
-                return new OperationResult<string> { Data = response.StatusCode == HttpStatusCode.OK ? "Success" : "Failed" };
+                return new OperationResult<string> { Succeeded = true, Data = await response.Content.ReadAsStringAsync() };
             }
             catch (HttpRequestException ex)
             {
                 var responseMessages = (await response.Content.ReadAsStringAsync()).Split('|');
-                return new OperationResult<string> { Succeeded = false, Errors = responseMessages.Length > 0 ? responseMessages : new[] { ex.Message } };
+                return new OperationResult<string> { Succeeded = false, Errors = responseMessages.Length > 0 ? responseMessages : [ex.Message] };
             }
             catch (TaskCanceledException ex)
             {
-                return new OperationResult<string> { Succeeded = false, Errors = new[] { "Request timed out.", ex.Message } };
+                return new OperationResult<string> { Succeeded = false, Errors = ["Request timed out.", ex.Message] };
             }
             catch (Exception ex)
             {
-                return new OperationResult<string> { Succeeded = false, Errors = new[] { ex.Message } };
+                return new OperationResult<string> { Succeeded = false, Errors = [ex.Message] };
             }
         }
 
@@ -156,21 +155,21 @@ namespace AJKAccessGuard.Services
             {
                 response = await _httpClient.PostAsJsonAsync("api/account/register", registerDto);
                 response.EnsureSuccessStatusCode();
-                return new OperationResult<string> { Data = response.StatusCode == HttpStatusCode.OK ? "Success" : "Failed" };
+                return new OperationResult<string> { Succeeded = true, Data = await response.Content.ReadAsStringAsync() };
             }
             catch (HttpRequestException ex)
             {
                 var responseMessages = (await response.Content.ReadAsStringAsync()).Split('|');
-                return new OperationResult<string> { Succeeded = false, Errors = responseMessages.Length > 0 ? responseMessages : new[] { ex.Message } };
+                return new OperationResult<string> { Succeeded = false, Errors = responseMessages.Length > 0 ? responseMessages : [ex.Message] };
             }
             catch (TaskCanceledException ex)
             {
-                return new OperationResult<string> { Succeeded = false, Errors = new[] { "Request timed out.", ex.Message } };
+                return new OperationResult<string> { Succeeded = false, Errors = ["Request timed out.", ex.Message] };
             }
             catch (Exception ex)
             {
                 var content = await response.Content.ReadAsStringAsync();
-                return new OperationResult<string> { Succeeded = false, Errors = content.Split("|") };
+                return new OperationResult<string> { Succeeded = false, Errors = [ex.Message] };
             }
         }
 
@@ -191,15 +190,15 @@ namespace AJKAccessGuard.Services
             catch (HttpRequestException ex)
             {
                 var responseMessages = (await response.Content.ReadAsStringAsync()).Split('|');
-                return new OperationResult<string> { Succeeded = false, Errors = responseMessages.Length > 0 ? responseMessages : new[] { ex.Message } };
+                return new OperationResult<string> { Succeeded = false, Errors = responseMessages.Length > 0 ? responseMessages : [ex.Message] };
             }
             catch (TaskCanceledException ex)
             {
-                return new OperationResult<string> { Succeeded = false, Errors = new[] { "Request timed out.", ex.Message } };
+                return new OperationResult<string> { Succeeded = false, Errors = ["Request timed out.", ex.Message] };
             }
             catch (Exception ex)
             {
-                return new OperationResult<string> { Succeeded = false, Errors = new[] { ex.Message } };
+                return new OperationResult<string> { Succeeded = false, Errors = [ex.Message] };
             }
         }
     }

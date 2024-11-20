@@ -6,8 +6,8 @@ namespace AJKAccessControl.Infrastructure.Repositories
     {
         Task<Person> GetByIdAsync(int id);
         Task<IEnumerable<Person>> GetAllAsync();
-        Task AddAsync(Person person);
-        Task UpdateAsync(Person person);
+        Task<int> AddAsync(Person person);
+        Task<int> UpdateAsync(Person person);
         Task DeleteAsync(int id);
     }
 }

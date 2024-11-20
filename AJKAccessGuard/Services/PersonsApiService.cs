@@ -1,6 +1,5 @@
 ﻿using AJKAccessControl.Domain.Responses;
 using AJKAccessControl.Shared.DTOs;
-using System.Net;
 using System.Net.Http.Json;
 
 namespace AJKAccessGuard.Services
@@ -81,7 +80,7 @@ namespace AJKAccessGuard.Services
             {
                 response = await _httpClient.PostAsJsonAsync("api/persons", personDTO).ConfigureAwait(false);
                 response.EnsureSuccessStatusCode();
-                return new OperationResult<string> { Data = response.StatusCode == HttpStatusCode.Created ? "Success" : "Failed" };
+                return new OperationResult<string> { Succeeded = true, Data = await response.Content.ReadAsStringAsync() };
             }
             catch (HttpRequestException ex)
             {
@@ -106,7 +105,7 @@ namespace AJKAccessGuard.Services
             {
                 response = await _httpClient.PutAsJsonAsync($"api/persons/{id}", personDTO).ConfigureAwait(false);
                 response.EnsureSuccessStatusCode();
-                return new OperationResult<string> { Data = response.StatusCode == HttpStatusCode.NoContent ? "Success" : "Failed" };
+                return new OperationResult<string> { Succeeded = true, Data = await response.Content.ReadAsStringAsync() };
             }
             catch (HttpRequestException ex)
             {
@@ -131,7 +130,7 @@ namespace AJKAccessGuard.Services
             {
                 response = await _httpClient.DeleteAsync($"api/persons/{id}").ConfigureAwait(false);
                 response.EnsureSuccessStatusCode();
-                return new OperationResult<string> { Data = response.StatusCode == HttpStatusCode.NoContent ? "Success" : "Failed" };
+                return new OperationResult<string> { Succeeded = true, Data = await response.Content.ReadAsStringAsync() };
             }
             catch (HttpRequestException ex)
             {
