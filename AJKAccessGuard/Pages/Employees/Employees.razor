@@ -2,9 +2,11 @@
 @using AJKAccessControl.Shared.DTOs
 @using AJKAccessGuard.Pages.SharedComponents
 @using AJKAccessGuard.Services
+@using static AJKAccessGuard.Pages.SharedComponents.DeleteModal
 @inject IPersonsApiService PersonsApiService
 @inject IUserStorageService userStorage
 @inject NavigationManager Navigation
+@inject IJSRuntime JS
 
 @if (showEmployeeComponent)
 {
@@ -47,7 +49,7 @@ else
                     <td>@employee.Company</td>
                     <td>
                         <button class="btn btn-outline-primary btn-sm" @onclick="() => EditEmployee(employee)">Edytuj</button>
-                        <button class="btn btn-outline-danger btn-sm" @onclick="() => DeleteEmployee(employee.Id)">Usuń</button>
+                        <button class="btn btn-outline-danger btn-sm" @onclick="() => ShowDeletePersonModal(employee)">Usuń</button>
                     </td>
                 </tr>
             }
@@ -57,16 +59,37 @@ else
 
 <Errors ErrorList="errors" />
 
+<DeleteModal Data="deleteModalModel" Show="showDeleteComponent" Confirmed="ConfirmDeletePerson"/>
+
+
 @code {
     private List<PersonDTO> EmployeeList = new List<PersonDTO>();
     private PersonDTO person = new PersonDTO();
-    private bool showEmployeeComponent = false;
     private bool isEditMode = false;
+    private bool showEmployeeComponent = false;
     private List<string> errors = new List<string>();
+    private bool showDeleteComponent = false;
+    private DeleteModalModel deleteModalModel = new DeleteModalModel();
 
     protected override async Task OnInitializedAsync()
     {
         await LoadEmployees();
+    }
+    private void ShowDeletePersonModal(PersonDTO selectedPerson)
+    {
+        person = selectedPerson;
+        deleteModalModel.Title = "Usuń pracownika";
+        deleteModalModel.Question = $"Czy na pewno chcesz usunąć pracownika {person.FirstName} {person.LastName}?";
+        showDeleteComponent = true;
+    }
+
+    private async Task ConfirmDeletePerson(bool deleteConfirmed)
+    {
+        if (deleteConfirmed)
+        {
+            await DeleteEmployee(person.Id);
+        }
+        showDeleteComponent = false;
     }
 
     private async Task LoadEmployees()
@@ -98,7 +121,14 @@ else
 
     private void EditEmployee(PersonDTO employee)
     {
-        person = employee;
+        person = new PersonDTO
+        {
+            Id = employee.Id,
+            FirstName = employee.FirstName,
+            LastName = employee.LastName,
+            IsEmployee = employee.IsEmployee,
+            Company = employee.Company
+        };
         isEditMode = true;
         showEmployeeComponent = true;
     }
@@ -195,5 +225,6 @@ else
     private void Cancel()
     {
         showEmployeeComponent = false;
+        errors.Clear();
     }
 }

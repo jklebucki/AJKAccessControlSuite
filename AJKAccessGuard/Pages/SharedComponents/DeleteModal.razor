@@ -1,0 +1,46 @@
+@using AJKAccessControl.Shared.DTOs
+
+<div class="modal fade @(Show ? "show": "")" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" style="display: @(Show ? "block" : "none");">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">@Data.Title</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @onclick="OnCancel"></button>
+            </div>
+            <div class="modal-body">
+                @Data.Question
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" @onclick="OnCancel">Anuluj</button>
+                <button type="button" class="btn btn-danger" @onclick="OnConfirm">Usuń</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public DeleteModalModel Data { get; set; } = new DeleteModalModel();
+
+    [Parameter]
+    public EventCallback<bool> Confirmed { get; set; }
+
+    [Parameter]
+    public bool Show { get; set; }
+
+    private async Task OnCancel()
+    {
+        await Confirmed.InvokeAsync(false);
+    }
+
+    private async Task OnConfirm()
+    {
+        await Confirmed.InvokeAsync(true);
+    }
+
+    public class DeleteModalModel
+    {
+        public string Title { get; set; } = string.Empty;
+        public string Question { get; set; } = string.Empty;
+    }
+}

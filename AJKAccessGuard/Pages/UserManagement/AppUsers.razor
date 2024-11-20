@@ -2,6 +2,7 @@
 @using AJKAccessControl.Shared.DTOs
 @using AJKAccessGuard.Pages.SharedComponents
 @using AJKAccessGuard.Services
+@using static AJKAccessGuard.Pages.SharedComponents.DeleteModal
 @inject IUsersApiService api
 @inject IUserStorageService userStorage
 @inject NavigationManager NavigationManager
@@ -29,23 +30,7 @@
         break;
 }
 
-<div class="modal fade" id="deleteUserModal" tabindex="-1" aria-labelledby="deleteUserModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="deleteUserModalLabel">Potwierdzenie usunięcia</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @onclick="HideDeleteUserModal"></button>
-            </div>
-            <div class="modal-body">
-                Czy na pewno chcesz usunąć użytkownika @userToDelete?
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @onclick="HideDeleteUserModal">Anuluj</button>
-                <button type="button" class="btn btn-danger" @onclick="ConfirmDeleteUser">Usuń</button>
-            </div>
-        </div>
-    </div>
-</div>
+<DeleteModal Data="deleteModalModel" Show="showDeleteComponent" Confirmed="ConfirmDeleteUser"/>
 
 <div class="modal fade" id="updatePasswordModal" tabindex="-1" aria-labelledby="updatePasswordModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -78,7 +63,6 @@
 </div>
 
 @code {
-    private string userToDelete = string.Empty;
     private string selectedUserName = string.Empty;
     private List<UserDto> users = new List<UserDto>();
     private string windowMode = "list";
@@ -87,6 +71,9 @@
 
     private ChangePasswordDto changePasswordDto = new ChangePasswordDto();
     private string confirmPassword = string.Empty;
+    private string userToDelete = string.Empty;
+    private DeleteModalModel deleteModalModel = new DeleteModalModel();
+    private bool showDeleteComponent = false;
 
     private async Task GetUserList()
     {
@@ -109,21 +96,21 @@
         }
     }
 
-    private async Task ShowDeleteUserModal(string userName)
+    private void ShowDeleteUserModal(string userName)
     {
         userToDelete = userName;
-        await JS.InvokeVoidAsync("eval", "new bootstrap.Modal(document.getElementById('deleteUserModal')).show()");
+        deleteModalModel.Title = "Usuń użytkownika";
+        deleteModalModel.Question = $"Czy na pewno chcesz usunąć użytkownika {userName}?";
+        showDeleteComponent = true;
     }
 
-    private async Task HideDeleteUserModal()
+    private async Task ConfirmDeleteUser(bool deleteConfirmed)
     {
-        await JS.InvokeVoidAsync("eval", "bootstrap.Modal.getInstance(document.getElementById('deleteUserModal')).hide()");
-    }
-
-    private async Task ConfirmDeleteUser()
-    {
-        await HideDeleteUserModal();
-        await DeleteUser(userToDelete);
+        if (deleteConfirmed)
+        {
+            await DeleteUser(userToDelete);
+        }
+        showDeleteComponent = false;
     }
 
     private void OpenCrateUserComponent()
@@ -151,9 +138,9 @@
         await GetUserList();
     }
 
-    private async Task OnDeleteUser(string userName)
+    private void OnDeleteUser(string userName)
     {
-        await ShowDeleteUserModal(userName);
+        ShowDeleteUserModal(userName);
     }
 
     private async Task DeleteUser(string userName)
