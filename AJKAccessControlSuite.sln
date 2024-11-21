@@ -15,7 +15,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AJKAccessControl.Infrastruc
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AJKAccessControl.Shared", "AJKAccessControl.Shared\AJKAccessControl.Shared.csproj", "{17C1C779-6610-4898-88D7-16E5421FC059}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AJKAccessControl.Domain.Tests", "AJKAccessControl.Domain.Tests\AJKAccessControl.Domain.Tests.csproj", "{E7203664-CF07-4757-9BB6-20B1CA824E3B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AJKAccessControl.Tests", "AJKAccessControl.Tests\AJKAccessControl.Tests.csproj", "{E7203664-CF07-4757-9BB6-20B1CA824E3B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AJKAccessControl.Core", "AJKAccessControl.Core\AJKAccessControl.Core.csproj", "{2CBBD9F3-1BCB-4005-879E-5BF48254FA0D}"
 EndProject

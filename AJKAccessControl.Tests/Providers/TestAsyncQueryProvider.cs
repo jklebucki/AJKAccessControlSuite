@@ -1,14 +1,14 @@
 using Microsoft.EntityFrameworkCore.Query;
 using System.Linq.Expressions;
 
-namespace AJKAccessControl.Domain.Tests.Providers;
+namespace AJKAccessControl.Tests.Providers;
 public class TestAsyncQueryProvider<TEntity> : IAsyncQueryProvider
 {
     private readonly IQueryProvider _inner;
 
     public TestAsyncQueryProvider(IQueryProvider inner)
     {
-        // Walidacja, aby upewniæ siê, ¿e _inner nie jest TestAsyncQueryProvider
+        // Walidacja, aby upewniï¿½ siï¿½, ï¿½e _inner nie jest TestAsyncQueryProvider
         if (inner is TestAsyncQueryProvider<TEntity>)
         {
             throw new InvalidOperationException("Nesting TestAsyncQueryProvider instances is not allowed.");
@@ -53,7 +53,7 @@ public class TestAsyncQueryProvider<TEntity> : IAsyncQueryProvider
         if (expression == null)
             throw new ArgumentNullException(nameof(expression));
 
-        // Bezpoœrednie wykonanie na _inner
+        // Bezpoï¿½rednie wykonanie na _inner
         return _inner.Execute<TResult>(expression);
     }
 }
