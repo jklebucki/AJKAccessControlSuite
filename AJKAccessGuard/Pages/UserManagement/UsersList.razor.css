@@ -1,33 +1,3 @@
-.table-custom {
-    width: 100%;
-    margin: 20px 0;
-    border-collapse: collapse;
-}
-
-.table-custom th, .table-custom td {
-    padding: 12px 15px;
-    text-align: left;
-    border-bottom: 1px solid #ddd;
-}
-
-.table-custom th {
-    background-color: #f8f9fa;
-    color: #333;
-    font-weight: bold;
-}
-
-.table-custom tr:nth-child(even) {
-    background-color: #f2f2f2;
-}
-
-.table-custom tr:hover {
-    background-color: #e9ecef;
-}
-
-.table-custom .action-buttons {
-    display: flex;
-    gap: 10px;
-}
 
 .table-custom .btn {
     padding: 5px 10px;
