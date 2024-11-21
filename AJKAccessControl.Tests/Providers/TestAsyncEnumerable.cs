@@ -15,7 +15,6 @@ public class TestAsyncEnumerable<T> : EnumerableQuery<T>, IAsyncEnumerable<T>, I
     {
         var enumerator = this.AsEnumerable().GetEnumerator();
 
-        // Unikni�cie rekurencji poprzez niezale�ny enumerator
         if (enumerator is TestAsyncEnumerator<T>)
         {
             throw new InvalidOperationException("Rekurencyjne wywo�anie GetAsyncEnumerator.");
@@ -30,7 +29,6 @@ public class TestAsyncEnumerable<T> : EnumerableQuery<T>, IAsyncEnumerable<T>, I
     {
         var enumerator = this.AsEnumerable().GetEnumerator();
 
-        // Zapobiegaj rekurencji w GetEnumerator
         if (enumerator is TestAsyncEnumerator<T>)
         {
             throw new InvalidOperationException("Rekurencyjne wywo�anie GetEnumerator.");

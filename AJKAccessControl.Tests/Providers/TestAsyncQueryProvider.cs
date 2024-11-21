@@ -8,7 +8,6 @@ public class TestAsyncQueryProvider<TEntity> : IAsyncQueryProvider
 
     public TestAsyncQueryProvider(IQueryProvider inner)
     {
-        // Walidacja, aby upewni� si�, �e _inner nie jest TestAsyncQueryProvider
         if (inner is TestAsyncQueryProvider<TEntity>)
         {
             throw new InvalidOperationException("Nesting TestAsyncQueryProvider instances is not allowed.");
@@ -53,7 +52,6 @@ public class TestAsyncQueryProvider<TEntity> : IAsyncQueryProvider
         if (expression == null)
             throw new ArgumentNullException(nameof(expression));
 
-        // Bezpo�rednie wykonanie na _inner
         return _inner.Execute<TResult>(expression);
     }
 }
