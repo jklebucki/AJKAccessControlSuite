@@ -1,6 +1,6 @@
 using System.Linq.Expressions;
 
-namespace AJKAccessControl.Domain.Tests.Providers;
+namespace AJKAccessControl.Tests.Providers;
 public class TestAsyncEnumerable<T> : EnumerableQuery<T>, IAsyncEnumerable<T>, IQueryable<T>
 {
     public TestAsyncEnumerable(IEnumerable<T> enumerable)
@@ -15,10 +15,10 @@ public class TestAsyncEnumerable<T> : EnumerableQuery<T>, IAsyncEnumerable<T>, I
     {
         var enumerator = this.AsEnumerable().GetEnumerator();
 
-        // Unikniêcie rekurencji poprzez niezale¿ny enumerator
+        // Unikniï¿½cie rekurencji poprzez niezaleï¿½ny enumerator
         if (enumerator is TestAsyncEnumerator<T>)
         {
-            throw new InvalidOperationException("Rekurencyjne wywo³anie GetAsyncEnumerator.");
+            throw new InvalidOperationException("Rekurencyjne wywoï¿½anie GetAsyncEnumerator.");
         }
 
         return new TestAsyncEnumerator<T>(enumerator);
@@ -33,7 +33,7 @@ public class TestAsyncEnumerable<T> : EnumerableQuery<T>, IAsyncEnumerable<T>, I
         // Zapobiegaj rekurencji w GetEnumerator
         if (enumerator is TestAsyncEnumerator<T>)
         {
-            throw new InvalidOperationException("Rekurencyjne wywo³anie GetEnumerator.");
+            throw new InvalidOperationException("Rekurencyjne wywoï¿½anie GetEnumerator.");
         }
 
         return enumerator;

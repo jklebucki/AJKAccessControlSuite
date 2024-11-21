@@ -10,11 +10,6 @@
 
 @if (showEmployeeComponent)
 {
-    <div class="centered-container mb-3 mt-3">
-        <h1 class="title-box">
-            @(isEditMode ? "Edytuj pracownika" : "Dodaj pracownika")
-        </h1>
-    </div>
     <Employee OnCancel="Cancel" IsEditMode="isEditMode" Person="person" OnSave="HandleSave" OnCreate="HandleCreate" />
 }
 else
@@ -104,7 +99,7 @@ else
         var result = await PersonsApiService.GetAllPersonsAsync(token);
         if (result.Succeeded)
         {
-            EmployeeList = result.Data.ToList();
+            EmployeeList = result.Data!.ToList();
         }
         else
         {

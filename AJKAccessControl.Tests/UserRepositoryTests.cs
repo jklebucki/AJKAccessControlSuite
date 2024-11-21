@@ -1,10 +1,10 @@
 using AJKAccessControl.Domain.Entities;
-using AJKAccessControl.Domain.Tests.Providers;
+using AJKAccessControl.Tests.Providers;
 using AJKAccessControl.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Moq;
 
-namespace AJKAccessControl.Domain.Tests;
+namespace AJKAccessControl.Tests;
 public class UserRepositoryTests
 {
     private readonly Mock<UserManager<User>> _userManagerMock;

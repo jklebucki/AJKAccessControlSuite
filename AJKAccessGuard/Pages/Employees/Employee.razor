@@ -3,6 +3,11 @@
 @using AJKAccessControl.Shared.DTOs
 
 
+<div class="centered-container mb-3 mt-3">
+    <h1 class="title-box">
+        @(IsEditMode ? "Edytuj pracownika" : "Dodaj pracownika")
+    </h1>
+</div>
 <div class="form-container">
     <EditForm Model="Person" OnValidSubmit="HandleValidSubmit">
         <DataAnnotationsValidator />

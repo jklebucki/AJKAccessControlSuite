@@ -1,4 +1,4 @@
-namespace AJKAccessControl.Domain.Tests.Providers;
+namespace AJKAccessControl.Tests.Providers;
 public class TestAsyncEnumerator<T> : IAsyncEnumerator<T>
 {
     private readonly IEnumerator<T> _inner;
