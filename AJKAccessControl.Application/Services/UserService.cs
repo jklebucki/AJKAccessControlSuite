@@ -29,7 +29,8 @@ namespace AJKAccessControl.Application.Services
                 PhoneNumber = registerDto.PhoneNumber,
                 Email = registerDto.Email!,
                 FirstName = registerDto.FirstName,
-                LastName = registerDto.LastName
+                LastName = registerDto.LastName,
+                CreatedBy = registerDto.CreatedBy // Ensure CreatedBy is set
             };
 
             return await _userRepository.CreateUserAsync(user, registerDto.Password, registerDto.Role);
@@ -159,7 +160,8 @@ namespace AJKAccessControl.Application.Services
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 CreatedAt = user.CreatedAt,
-                UpdatedAt = user.UpdatedAt
+                UpdatedAt = user.UpdatedAt,
+                CreatedBy = user.CreatedBy,
             });
 
         }
