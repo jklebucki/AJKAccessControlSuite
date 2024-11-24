@@ -22,7 +22,8 @@ namespace AJKAccessControl.Infrastructure.Identity
                 Email = "",
                 EmailConfirmed = true,
                 FirstName = "System",
-                LastName = "Admin"
+                LastName = "Admin",
+                CreatedBy = "System"
             });
             if (result.Succeeded)
             {
