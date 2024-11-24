@@ -1,0 +1,73 @@
+@page "/vehicles/vehicle"
+@using AJKAccessControl.Domain.Entities
+@using AJKAccessControl.Shared.DTOs
+
+<div class="centered-container mb-3 mt-3">
+    <h1 class="title-box">
+        @(IsEditMode ? "Edytuj pojazd" : "Dodaj pojazd")
+    </h1>
+</div>
+<div class="form-600-container">
+    <EditForm Model="VehicleDto" OnValidSubmit="HandleValidSubmit">
+        <DataAnnotationsValidator />
+        <ValidationSummary class="text-danger" />
+
+        <div class="mb-3 row">
+            <label for="plateNumber" class="col-sm-4 col-form-label">Nr rej.</label>
+            <div class="col-sm-8">
+                <InputText id="plateNumber" class="form-control" @bind-Value="VehicleDto.PlateNumber" />
+            </div>
+        </div>
+        <div class="mb-3 row">
+            <label for="isCompanyCar" class="col-sm-4 col-form-label">Samochód firmowy</label>
+            <div class="col-sm-8">
+                <InputCheckbox id="isCompanyCar" class="form-check-input" @bind-Value="VehicleDto.IsCompanyCar" />
+            </div>
+        </div>
+        <div class="mb-3 row">
+            <label for="company" class="col-sm-4 col-form-label">Firma</label>
+            <div class="col-sm-8">
+                <InputText id="company" class="form-control" @bind-Value="VehicleDto.Company" />
+            </div>
+        </div>
+        <div class="mb-3 row">
+            <label for="owner" class="col-sm-4 col-form-label">Właściciel</label>
+            <div class="col-sm-8">
+                <InputText id="owner" class="form-control" @bind-Value="VehicleDto.Owner" />
+            </div>
+        </div>
+
+        <div class="mb-3 row">
+            <div class="col-sm-4"></div>
+            <div class="col-sm-8">
+                <button type="submit" class="btn btn-outline-primary">@((IsEditMode ? "Zapisz" : "Dodaj"))</button>
+                <button type="button" class="btn btn-outline-secondary" @onclick="Cancel">Anuluj</button>
+            </div>
+        </div>
+    </EditForm>
+</div>
+
+@code {
+    [Parameter] public VehicleDTO VehicleDto { get; set; } = new VehicleDTO();
+    [Parameter] public EventCallback<VehicleDTO> OnSave { get; set; }
+    [Parameter] public EventCallback<VehicleDTO> OnCreate { get; set; }
+    [Parameter] public EventCallback OnCancel { get; set; }
+    [Parameter] public bool IsEditMode { get; set; }
+
+    private async Task HandleValidSubmit()
+    {
+        if (IsEditMode)
+        {
+            await OnSave.InvokeAsync(VehicleDto);
+        }
+        else
+        {
+            await OnCreate.InvokeAsync(VehicleDto);
+        }
+    }
+
+    private async Task Cancel()
+    {
+        await OnCancel.InvokeAsync();
+    }
+}

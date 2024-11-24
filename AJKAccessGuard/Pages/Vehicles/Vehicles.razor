@@ -1,0 +1,221 @@
+@page "/vehicles"
+@using AJKAccessControl.Shared.DTOs
+@using AJKAccessGuard.Pages.SharedComponents
+@using AJKAccessGuard.Services
+@using static AJKAccessGuard.Pages.SharedComponents.DeleteModal
+@inject IVehiclesApiService VehiclesApiService
+@inject IUserStorageService userStorage
+@inject NavigationManager Navigation
+@inject IJSRuntime JS
+
+@if (showVehicleComponent)
+{
+    <Vehicle OnCancel="Cancel" IsEditMode="isEditMode" VehicleDto="vehicle" OnSave="HandleSave" OnCreate="HandleCreate" />
+}
+else
+{
+    <div class="centered-container mb-3 mt-3">
+        <h1 class="title-box">
+            Pojazdy
+        </h1>
+    </div>
+    <button class="btn btn-outline-primary mb-3" @onclick="CreateNewVehicle">Dodaj pojazd</button>
+    <table class="table table-custom">
+        <thead>
+            <tr>
+                <th>Nr rej.</th>
+                <th>Firma</th>
+                <th>Właściciel</th>
+                <th>Akcje</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var vehicle in VehicleList)
+            {
+                <tr>
+                    <td>@vehicle.PlateNumber</td>
+                    <td>@vehicle.Company</td>
+                    <td>@vehicle.Owner</td>
+                    <td>
+                        <button class="btn btn-outline-primary btn-sm" @onclick="() => EditVehicle(vehicle)">Edytuj</button>
+                        <button class="btn btn-outline-danger btn-sm" @onclick="() => ShowDeleteVehicleModal(vehicle)">Usuń</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<Errors ErrorList="errors" />
+
+<DeleteModal Data="deleteModalModel" Show="showDeleteComponent" Confirmed="ConfirmDeleteVehicle"/>
+
+@code {
+    private List<VehicleDTO> VehicleList = new List<VehicleDTO>();
+    private VehicleDTO vehicle = new VehicleDTO();
+    private bool isEditMode = false;
+    private bool showVehicleComponent = false;
+    private List<string> errors = new List<string>();
+    private bool showDeleteComponent = false;
+    private DeleteModalModel deleteModalModel = new DeleteModalModel();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadVehicles();
+    }
+
+    private void ShowDeleteVehicleModal(VehicleDTO selectedVehicle)
+    {
+        vehicle = selectedVehicle;
+        deleteModalModel.Title = "Usuń pojazd";
+        deleteModalModel.Question = $"Czy na pewno chcesz usunąć pojazd {vehicle.PlateNumber} ?";
+        showDeleteComponent = true;
+    }
+
+    private async Task ConfirmDeleteVehicle(bool deleteConfirmed)
+    {
+        if (deleteConfirmed)
+        {
+            await DeleteVehicle(vehicle.Id);
+        }
+        showDeleteComponent = false;
+    }
+
+    private async Task LoadVehicles()
+    {
+        var token = await userStorage.GetTokenAsync();
+        if (string.IsNullOrEmpty(token))
+        {
+            errors.Add("Brak dostępu do zasobów. Zaloguj się ponownie.");
+            return;
+        }
+
+        var result = await VehiclesApiService.GetAllVehiclesAsync(token);
+        if (result.Succeeded)
+        {
+            VehicleList = result.Data!.ToList();
+        }
+        else
+        {
+            errors.AddRange(result.Errors);
+        }
+    }
+
+    private void CreateNewVehicle()
+    {
+        vehicle = new VehicleDTO();
+        isEditMode = false;
+        showVehicleComponent = true;
+    }
+
+    private void EditVehicle(VehicleDTO vehicle)
+    {
+        this.vehicle = new VehicleDTO
+        {
+            Id = vehicle.Id,
+            PlateNumber = vehicle.PlateNumber,
+            IsCompanyCar = vehicle.IsCompanyCar,
+            Company = vehicle.Company,
+            Owner = vehicle.Owner,
+            CreatedBy = vehicle.CreatedBy,
+            CreatedAt = vehicle.CreatedAt            
+        };
+        isEditMode = true;
+        showVehicleComponent = true;
+    }
+
+    private async Task DeleteVehicle(int id)
+    {
+        errors.Clear();
+
+        var token = await userStorage.GetTokenAsync();
+        if (string.IsNullOrEmpty(token))
+        {
+            errors.Add("Brak dostępu do zasobów. Zaloguj się ponownie.");
+            return;
+        }
+
+        var result = await VehiclesApiService.DeleteVehicleAsync(id, token);
+        if (result.Succeeded)
+        {
+            VehicleList = VehicleList.Where(v => v.Id != id).ToList();
+        }
+        else
+        {
+            errors.AddRange(result.Errors);
+        }
+    }
+
+    private async Task HandleSave(VehicleDTO vehicle)
+    {
+        errors.Clear();
+
+        var token = await userStorage.GetTokenAsync();
+        if (string.IsNullOrEmpty(token))
+        {
+            errors.Add("Brak dostępu do zasobów. Zaloguj się ponownie.");
+            return;
+        }
+        try
+        {
+            var result = await VehiclesApiService.UpdateVehicleAsync(vehicle.Id, vehicle, token);
+            if (result.Succeeded)
+            {
+                var index = VehicleList.FindIndex(v => v.Id == vehicle.Id);
+                if (index != -1)
+                {
+                    VehicleList[index] = vehicle;
+                }
+                showVehicleComponent = false;
+            }
+            else
+            {
+                errors.AddRange(result.Errors);
+            }
+        }
+        catch (Exception ex)
+        {
+            errors.Add(ex.Message);
+        }
+    }
+
+    private async Task HandleCreate(VehicleDTO vehicle)
+    {
+        errors.Clear();
+
+        var token = await userStorage.GetTokenAsync();
+        if (string.IsNullOrEmpty(token))
+        {
+            errors.Add("Brak dostępu do zasobów. Zaloguj się ponownie.");
+            return;
+        }
+
+        var result = await VehiclesApiService.AddVehicleAsync(vehicle, token);
+        if (result.Succeeded)
+        {
+            var id = 0;
+            int.TryParse(result.Data, out id);
+            vehicle.Id = id;
+            if (id != 0)
+            {
+                VehicleList.Add(vehicle);
+            }
+            else
+            {
+                await LoadVehicles();
+            }
+
+            showVehicleComponent = false;
+        }
+        else
+        {
+            errors.AddRange(result.Errors);
+        }
+    }
+
+    private void Cancel()
+    {
+        showVehicleComponent = false;
+        errors.Clear();
+    }
+}
