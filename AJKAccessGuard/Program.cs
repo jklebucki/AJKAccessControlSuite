@@ -18,6 +18,7 @@ builder.Services.AddScoped<IUsersApiService, UserApiService>();
 builder.Services.AddScoped<IUserStorageService, UserStorageService>();
 builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
 builder.Services.AddScoped<IPersonsApiService, PersonsApiService>();
+builder.Services.AddScoped<IVehiclesApiService, VehiclesApiService>();
 
 builder.Services.AddAuthorizationCore();
 
