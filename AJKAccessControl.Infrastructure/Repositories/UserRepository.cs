@@ -2,7 +2,6 @@ using AJKAccessControl.Domain.Entities;
 using AJKAccessControl.Domain.Responses;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations;
 
 namespace AJKAccessControl.Infrastructure.Repositories
 {
@@ -130,11 +129,6 @@ namespace AJKAccessControl.Infrastructure.Repositories
             if (string.IsNullOrEmpty(user.LastName))
             {
                 errors.Add("Last name cannot be null or empty.");
-            }
-
-            if (string.IsNullOrEmpty(user.Email) || !new EmailAddressAttribute().IsValid(user.Email))
-            {
-                errors.Add("Invalid email address.");
             }
 
             return errors;

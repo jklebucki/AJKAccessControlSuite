@@ -103,9 +103,22 @@
         await Close.InvokeAsync(false);
     }
 
+    private async Task<string> ReturnTokenIfAvailableAsync()
+    {
+        var token = await userStorage.GetTokenAsync();
+        if (string.IsNullOrEmpty(token))
+        {
+            errors.Add("Brak dostępu do zasobów. Zaloguj się ponownie.");
+            return string.Empty;
+        }
+        return token;
+    }
     private async Task OnCreateUser()
     {
         errors.Clear();
+        if (string.IsNullOrEmpty(await ReturnTokenIfAvailableAsync()))
+            return;
+
         if (newUser.Password != confirmPassword)
         {
             errors.Add("Hasła nie są zgodne.");
@@ -116,11 +129,9 @@
 
     private async Task CreateUserRequest()
     {
-        var token = await userStorage.GetTokenAsync();
+        var token = await ReturnTokenIfAvailableAsync();
         if (string.IsNullOrEmpty(token))
-        {
-            errors.Add("Brak dostępu do zasobów. Zaloguj się ponownie.");
-        }
+            return;
         else
         {
             var result = await api.RegisterUserAsync(newUser, token);

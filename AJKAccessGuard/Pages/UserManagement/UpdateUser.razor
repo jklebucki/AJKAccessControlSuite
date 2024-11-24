@@ -8,8 +8,9 @@
 
 <div class="update-user-form">
     <h3>Aktualizuj użytkownika @UserName</h3>
-    <EditForm Model="existingUser" OnSubmit="OnUpdateUser">
+    <EditForm Model="existingUser" OnValidSubmit="OnUpdateUser">
         <DataAnnotationsValidator />
+        <ValidationSummary />
 
         <div class="form-group">
             <label for="email">Email:</label>
@@ -61,10 +62,17 @@
     private UpdateUserDto existingUser = new UpdateUserDto();
     private List<string> errors = new List<string>();
     private List<string> availableRoles = new List<string> { "Admin", "Supervisor", "User" };
+    private EditContext editContext = default!;
 
     protected override async Task OnInitializedAsync()
     {
+        editContext = new EditContext(existingUser);
         await LoadUserData();
+    }
+
+    private void FieldChangedHandler(object? sender, FieldChangedEventArgs e)
+    {
+        editContext.NotifyValidationStateChanged();
     }
 
     private void OnSelectionChanged(ChangeEventArgs e)

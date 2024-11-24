@@ -151,3 +151,17 @@ code {
         display: flex;
         gap: 10px;
     }
+
+
+    .validation-errors {
+        color: red;
+        font-size: 14px;
+        margin-top: 10px;
+    }
+    
+    .validation-message {
+        color: red;
+        font-size: 12px;
+        margin-top: 5px;
+    }
+    

@@ -4,8 +4,8 @@ namespace AJKAccessControl.Shared.DTOs
 {
     public class UpdateUserDto
     {
-        [EmailAddress(ErrorMessage = "Niepoprawny format adresu email.")]
-        public string Email { get; set; } = string.Empty;
+        [ConditionalEmailAttribute(ErrorMessage = "Niepoprawny format adresu email.", ErrorMessageResourceName = "Email")]
+        public string? Email { get; set; }
         [Required(ErrorMessage = "Imię jest wymagane")]
         public string FirstName { get; set; } = string.Empty;
         [Required(ErrorMessage = "Nazwisko jest wymagane")]
@@ -15,7 +15,7 @@ namespace AJKAccessControl.Shared.DTOs
         [StringLength(100, MinimumLength = 6, ErrorMessage = "Hasło musi mieć co najmniej 6 znaków.")]
         [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z\d]).+$",
         ErrorMessage = "Hasło musi zawierać co najmniej jedną wielką literę, jedną małą literę, jedną cyfrę oraz jeden znak niealfanumeryczny.")]
-        public string Password { get; set; } = string.Empty;
+        public string? Password { get; set; }
         public IList<string?> Roles { get; set; } = [];
     }
 }
