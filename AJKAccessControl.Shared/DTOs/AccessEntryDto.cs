@@ -1,7 +1,7 @@
-namespace AJKAccessControl.Domain.Entities
-{
 
-    public class AccessEntry
+namespace AJKAccessControl.Shared.DTOs
+{
+    public class AccessEntryDto
     {
         public int Id { get; set; }
         public int EntityId { get; set; }
@@ -12,10 +12,5 @@ namespace AJKAccessControl.Domain.Entities
         public string CreatedBy { get; set; } = string.Empty;
         public DateTime? CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
-
-        public AccessEntry()
-        {
-            CreatedAt = DateTime.UtcNow;
-        }
     }
 }
