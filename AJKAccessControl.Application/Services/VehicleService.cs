@@ -31,11 +31,11 @@ namespace AJKAccessControl.Application.Services
             return new OperationResult<IEnumerable<VehicleDto>> { Succeeded = true, Data = vehicles.Select(MapToDTO) };
         }
 
-        public async Task<OperationResult<string>> AddAsync(VehicleDto vehicleDTO)
+        public async Task<OperationResult<string>> AddAsync(VehicleDto vehicleDto)
         {
             try
             {
-                var vehicle = MapToEntity(vehicleDTO);
+                var vehicle = MapToEntity(vehicleDto);
                 var vehicleId = await _vehicleRepository.AddAsync(vehicle);
                 return new OperationResult<string> { Succeeded = true, Data = $"{vehicleId}" };
             }
@@ -45,9 +45,9 @@ namespace AJKAccessControl.Application.Services
             }
         }
 
-        public async Task<OperationResult<string>> UpdateAsync(VehicleDto vehicleDTO)
+        public async Task<OperationResult<string>> UpdateAsync(VehicleDto vehicleDto)
         {
-            var vehicle = await _vehicleRepository.GetByIdAsync(vehicleDTO.Id);
+            var vehicle = await _vehicleRepository.GetByIdAsync(vehicleDto.Id);
             if (vehicle == null)
             {
                 return new OperationResult<string> { Succeeded = false, Errors = new List<string> { "Vehicle not found" } };
@@ -55,13 +55,13 @@ namespace AJKAccessControl.Application.Services
 
             try
             {
-                vehicle.PlateNumber = vehicleDTO.PlateNumber;
-                vehicle.IsCompanyCar = vehicleDTO.IsCompanyCar;
-                vehicle.Company = vehicleDTO.Company;
-                vehicle.Owner = vehicleDTO.Owner;
-                vehicle.CreatedBy = vehicleDTO.CreatedBy;
-                vehicle.CreatedAt = vehicleDTO.CreatedAt;
-                vehicle.UpdatedAt = vehicleDTO.UpdatedAt;
+                vehicle.PlateNumber = vehicleDto.PlateNumber;
+                vehicle.IsCompanyCar = vehicleDto.IsCompanyCar;
+                vehicle.Company = vehicleDto.Company;
+                vehicle.Owner = vehicleDto.Owner;
+                vehicle.CreatedBy = vehicleDto.CreatedBy;
+                vehicle.CreatedAt = vehicleDto.CreatedAt;
+                vehicle.UpdatedAt = vehicleDto.UpdatedAt;
                 var vehicleId = await _vehicleRepository.UpdateAsync(vehicle);
                 return new OperationResult<string> { Succeeded = true, Data = $"{vehicleId}" };
             }
@@ -98,18 +98,18 @@ namespace AJKAccessControl.Application.Services
             };
         }
 
-        private Vehicle MapToEntity(VehicleDto vehicleDTO)
+        private Vehicle MapToEntity(VehicleDto vehicleDto)
         {
             return new Vehicle
             {
-                Id = vehicleDTO.Id,
-                PlateNumber = vehicleDTO.PlateNumber,
-                IsCompanyCar = vehicleDTO.IsCompanyCar,
-                Company = vehicleDTO.Company,
-                Owner = vehicleDTO.Owner,
-                CreatedBy = vehicleDTO.CreatedBy,
-                CreatedAt = vehicleDTO.CreatedAt,
-                UpdatedAt = vehicleDTO.UpdatedAt
+                Id = vehicleDto.Id,
+                PlateNumber = vehicleDto.PlateNumber,
+                IsCompanyCar = vehicleDto.IsCompanyCar,
+                Company = vehicleDto.Company,
+                Owner = vehicleDto.Owner,
+                CreatedBy = vehicleDto.CreatedBy,
+                CreatedAt = vehicleDto.CreatedAt,
+                UpdatedAt = vehicleDto.UpdatedAt
             };
         }
     }

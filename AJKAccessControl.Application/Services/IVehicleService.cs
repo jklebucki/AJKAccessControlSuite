@@ -8,8 +8,8 @@ namespace AJKAccessControl.Application.Services
     {
         Task<OperationResult<VehicleDto>> GetByIdAsync(int id);
         Task<OperationResult<IEnumerable<VehicleDto>>> GetAllAsync();
-        Task<OperationResult<string>> AddAsync(VehicleDto vehicleDTO);
-        Task<OperationResult<string>> UpdateAsync(VehicleDto vehicleDTO);
+        Task<OperationResult<string>> AddAsync(VehicleDto vehicleDto);
+        Task<OperationResult<string>> UpdateAsync(VehicleDto vehicleDto);
         Task<OperationResult<string>> DeleteAsync(int id);
     }
 }

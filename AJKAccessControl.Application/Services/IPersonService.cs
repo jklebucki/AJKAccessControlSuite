@@ -7,8 +7,8 @@ namespace AJKAccessControl.Application.Services
     {
         Task<OperationResult<PersonDto>> GetByIdAsync(int id);
         Task<OperationResult<IEnumerable<PersonDto>>> GetAllAsync();
-        Task<OperationResult<string>> AddAsync(PersonDto personDTO);
-        Task<OperationResult<string>> UpdateAsync(PersonDto personDTO);
+        Task<OperationResult<string>> AddAsync(PersonDto personDto);
+        Task<OperationResult<string>> UpdateAsync(PersonDto personDto);
         Task<OperationResult<string>> DeleteAsync(int id);
     }
 }

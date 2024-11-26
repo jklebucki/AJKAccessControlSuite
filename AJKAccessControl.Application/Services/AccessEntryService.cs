@@ -31,11 +31,11 @@ namespace AJKAccessControl.Application.Services
             return new OperationResult<IEnumerable<AccessEntryDto>> { Succeeded = true, Data = accessEntries.Select(MapToDTO) };
         }
 
-        public async Task<OperationResult<string>> AddAsync(AccessEntryDto accessEntryDTO)
+        public async Task<OperationResult<string>> AddAsync(AccessEntryDto accessEntryDto)
         {
             try
             {
-                var accessEntry = MapToEntity(accessEntryDTO);
+                var accessEntry = MapToEntity(accessEntryDto);
                 var accessEntryId = await _accessEntryRepository.AddAsync(accessEntry);
                 return new OperationResult<string> { Succeeded = true, Data = $"{accessEntryId}" };
             }
@@ -45,9 +45,9 @@ namespace AJKAccessControl.Application.Services
             }
         }
 
-        public async Task<OperationResult<string>> UpdateAsync(AccessEntryDto accessEntryDTO)
+        public async Task<OperationResult<string>> UpdateAsync(AccessEntryDto accessEntryDto)
         {
-            var accessEntry = await _accessEntryRepository.GetByIdAsync(accessEntryDTO.Id);
+            var accessEntry = await _accessEntryRepository.GetByIdAsync(accessEntryDto.Id);
             if (accessEntry == null)
             {
                 return new OperationResult<string> { Succeeded = false, Errors = new List<string> { "AccessEntry not found" } };
@@ -55,14 +55,14 @@ namespace AJKAccessControl.Application.Services
 
             try
             {
-                accessEntry.EntityId = accessEntryDTO.EntityId;
-                accessEntry.EntityType = accessEntryDTO.EntityType;
-                accessEntry.EntryTime = accessEntryDTO.EntryTime;
-                accessEntry.ExitTime = accessEntryDTO.ExitTime;
-                accessEntry.Description = accessEntryDTO.Description;
-                accessEntry.CreatedBy = accessEntryDTO.CreatedBy;
-                accessEntry.CreatedAt = accessEntryDTO.CreatedAt;
-                accessEntry.UpdatedAt = accessEntryDTO.UpdatedAt;
+                accessEntry.EntityId = accessEntryDto.EntityId;
+                accessEntry.EntityType = accessEntryDto.EntityType;
+                accessEntry.EntryTime = accessEntryDto.EntryTime;
+                accessEntry.ExitTime = accessEntryDto.ExitTime;
+                accessEntry.Description = accessEntryDto.Description;
+                accessEntry.CreatedBy = accessEntryDto.CreatedBy;
+                accessEntry.CreatedAt = accessEntryDto.CreatedAt;
+                accessEntry.UpdatedAt = accessEntryDto.UpdatedAt;
                 var accessEntryId = await _accessEntryRepository.UpdateAsync(accessEntry);
                 return new OperationResult<string> { Succeeded = true, Data = $"{accessEntryId}" };
             }
@@ -99,19 +99,19 @@ namespace AJKAccessControl.Application.Services
             };
         }
 
-        private AccessEntry MapToEntity(AccessEntryDto accessEntryDTO)
+        private AccessEntry MapToEntity(AccessEntryDto accessEntryDto)
         {
             return new AccessEntry
             {
-                Id = accessEntryDTO.Id,
-                EntityId = accessEntryDTO.EntityId,
-                EntityType = accessEntryDTO.EntityType,
-                EntryTime = accessEntryDTO.EntryTime,
-                ExitTime = accessEntryDTO.ExitTime,
-                Description = accessEntryDTO.Description,
-                CreatedBy = accessEntryDTO.CreatedBy,
-                CreatedAt = accessEntryDTO.CreatedAt,
-                UpdatedAt = accessEntryDTO.UpdatedAt
+                Id = accessEntryDto.Id,
+                EntityId = accessEntryDto.EntityId,
+                EntityType = accessEntryDto.EntityType,
+                EntryTime = accessEntryDto.EntryTime,
+                ExitTime = accessEntryDto.ExitTime,
+                Description = accessEntryDto.Description,
+                CreatedBy = accessEntryDto.CreatedBy,
+                CreatedAt = accessEntryDto.CreatedAt,
+                UpdatedAt = accessEntryDto.UpdatedAt
             };
         }
     }

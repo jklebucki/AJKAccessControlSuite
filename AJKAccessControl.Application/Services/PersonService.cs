@@ -30,11 +30,11 @@ namespace AJKAccessControl.Application.Services
             return new OperationResult<IEnumerable<PersonDto>> { Succeeded = true, Data = persons.Select(MapToDTO) };
         }
 
-        public async Task<OperationResult<string>> AddAsync(PersonDto personDTO)
+        public async Task<OperationResult<string>> AddAsync(PersonDto personDto)
         {
             try
             {
-                var person = MapToEntity(personDTO);
+                var person = MapToEntity(personDto);
                 var personId = await _personRepository.AddAsync(person);
                 return new OperationResult<string> { Succeeded = true, Data = $"{personId}" };
             }
@@ -44,9 +44,9 @@ namespace AJKAccessControl.Application.Services
             }
         }
 
-        public async Task<OperationResult<string>> UpdateAsync(PersonDto personDTO)
+        public async Task<OperationResult<string>> UpdateAsync(PersonDto personDto)
         {
-            var person = await _personRepository.GetByIdAsync(personDTO.Id);
+            var person = await _personRepository.GetByIdAsync(personDto.Id);
             if (person == null)
             {
                 return new OperationResult<string> { Succeeded = false, Errors = new List<string> { "Person not found" } };
@@ -54,13 +54,13 @@ namespace AJKAccessControl.Application.Services
 
             try
             {
-                person.FirstName = personDTO.FirstName;
-                person.LastName = personDTO.LastName;
-                person.IsEmployee = personDTO.IsEmployee;
-                person.Company = personDTO.Company;
-                person.CreatedBy = personDTO.CreatedBy;
-                person.CreatedAt = personDTO.CreatedAt;
-                person.UpdatedAt = personDTO.UpdatedAt;
+                person.FirstName = personDto.FirstName;
+                person.LastName = personDto.LastName;
+                person.IsEmployee = personDto.IsEmployee;
+                person.Company = personDto.Company;
+                person.CreatedBy = personDto.CreatedBy;
+                person.CreatedAt = personDto.CreatedAt;
+                person.UpdatedAt = personDto.UpdatedAt;
                 var personId = await _personRepository.UpdateAsync(person);
                 return new OperationResult<string> { Succeeded = true, Data = $"{personId}" };
             }
@@ -98,18 +98,18 @@ namespace AJKAccessControl.Application.Services
             };
         }
 
-        private Person MapToEntity(PersonDto personDTO)
+        private Person MapToEntity(PersonDto personDto)
         {
             return new Person
             {
-                Id = personDTO.Id,
-                FirstName = personDTO.FirstName,
-                LastName = personDTO.LastName,
-                IsEmployee = personDTO.IsEmployee,
-                Company = personDTO.Company,
-                CreatedBy = personDTO.CreatedBy,
-                CreatedAt = personDTO.CreatedAt,
-                UpdatedAt = personDTO.UpdatedAt
+                Id = personDto.Id,
+                FirstName = personDto.FirstName,
+                LastName = personDto.LastName,
+                IsEmployee = personDto.IsEmployee,
+                Company = personDto.Company,
+                CreatedBy = personDto.CreatedBy,
+                CreatedAt = personDto.CreatedAt,
+                UpdatedAt = personDto.UpdatedAt
             };
         }
     }
