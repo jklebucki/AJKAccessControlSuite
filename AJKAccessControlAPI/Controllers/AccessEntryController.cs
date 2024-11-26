@@ -1,4 +1,5 @@
-﻿using AJKAccessControl.Application.Services;
+
+using AJKAccessControl.Application.Services;
 using AJKAccessControl.Shared.DTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -7,20 +8,20 @@ namespace AJKAccessControlAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class PersonsController : ControllerBase
+    public class AccessEntryController : ControllerBase
     {
-        private readonly IPersonService _personService;
+        private readonly IAccessEntryService _accessEntryService;
 
-        public PersonsController(IPersonService personService)
+        public AccessEntryController(IAccessEntryService accessEntryService)
         {
-            _personService = personService;
+            _accessEntryService = accessEntryService;
         }
 
         [HttpGet("{id}")]
         [Authorize(Roles = "Admin, Supervisor, User")]
-        public async Task<IActionResult> GetPerson(int id)
+        public async Task<IActionResult> GetAccessEntry(int id)
         {
-            var result = await _personService.GetByIdAsync(id);
+            var result = await _accessEntryService.GetByIdAsync(id);
             if (!result.Succeeded)
             {
                 return NotFound(string.Join("|", result.Errors));
@@ -30,9 +31,9 @@ namespace AJKAccessControlAPI.Controllers
 
         [HttpGet]
         [Authorize(Roles = "Admin, Supervisor, User")]
-        public async Task<IActionResult> GetPersons()
+        public async Task<IActionResult> GetAccessEntries()
         {
-            var result = await _personService.GetAllAsync();
+            var result = await _accessEntryService.GetAllAsync();
             if (!result.Succeeded)
             {
                 return NotFound(string.Join("|", result.Errors));
@@ -42,26 +43,26 @@ namespace AJKAccessControlAPI.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Admin, Supervisor, User")]
-        public async Task<IActionResult> AddPerson([FromBody] PersonDto personDTO)
+        public async Task<IActionResult> AddAccessEntry([FromBody] AccessEntryDto accessEntryDTO)
         {
-            var result = await _personService.AddAsync(personDTO);
+            var result = await _accessEntryService.AddAsync(accessEntryDTO);
             if (!result.Succeeded)
             {
                 return BadRequest(string.Join("|", result.Errors));
             }
-            return CreatedAtAction(nameof(GetPerson), new { id = personDTO.Id }, personDTO);
+            return CreatedAtAction(nameof(GetAccessEntry), new { id = accessEntryDTO.Id }, accessEntryDTO);
         }
 
         [HttpPut("{id}")]
         [Authorize(Roles = "Admin, Supervisor, User")]
-        public async Task<IActionResult> UpdatePerson(int id, [FromBody] PersonDto personDTO)
+        public async Task<IActionResult> UpdateAccessEntry(int id, [FromBody] AccessEntryDto accessEntryDTO)
         {
-            if (id != personDTO.Id)
+            if (id != accessEntryDTO.Id)
             {
                 return BadRequest("ID mismatch");
             }
 
-            var result = await _personService.UpdateAsync(personDTO);
+            var result = await _accessEntryService.UpdateAsync(accessEntryDTO);
             if (!result.Succeeded)
             {
                 return BadRequest(string.Join("|", result.Errors));
@@ -71,9 +72,9 @@ namespace AJKAccessControlAPI.Controllers
 
         [HttpDelete("{id}")]
         [Authorize(Roles = "Admin, Supervisor, User")]
-        public async Task<IActionResult> DeletePerson(int id)
+        public async Task<IActionResult> DeleteAccessEntry(int id)
         {
-            var result = await _personService.DeleteAsync(id);
+            var result = await _accessEntryService.DeleteAsync(id);
             if (!result.Succeeded)
             {
                 return BadRequest(string.Join("|", result.Errors));

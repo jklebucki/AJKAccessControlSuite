@@ -29,7 +29,7 @@ namespace AJKAccessGuard.Services
             SetAuthorizationHeader(token);
             try
             {
-                var person = await _httpClient.GetFromJsonAsync<PersonDto>($"api/persons/{id}").ConfigureAwait(false);
+                var person = await _httpClient.GetFromJsonAsync<PersonDto>($"api/person/{id}").ConfigureAwait(false);
                 if (person == null)
                 {
                     throw new HttpRequestException("Person not found.");
@@ -55,7 +55,7 @@ namespace AJKAccessGuard.Services
             SetAuthorizationHeader(token);
             try
             {
-                var persons = await _httpClient.GetFromJsonAsync<IEnumerable<PersonDto>>("api/persons").ConfigureAwait(false);
+                var persons = await _httpClient.GetFromJsonAsync<IEnumerable<PersonDto>>("api/person").ConfigureAwait(false);
                 return new OperationResult<IEnumerable<PersonDto>> { Succeeded = true, Data = persons ?? Enumerable.Empty<PersonDto>() };
             }
             catch (HttpRequestException ex)
@@ -78,7 +78,7 @@ namespace AJKAccessGuard.Services
             var response = new HttpResponseMessage();
             try
             {
-                response = await _httpClient.PostAsJsonAsync("api/persons", personDTO).ConfigureAwait(false);
+                response = await _httpClient.PostAsJsonAsync("api/person", personDTO).ConfigureAwait(false);
                 response.EnsureSuccessStatusCode();
                 return new OperationResult<string> { Succeeded = true, Data = await response.Content.ReadAsStringAsync() };
             }
@@ -103,7 +103,7 @@ namespace AJKAccessGuard.Services
             var response = new HttpResponseMessage();
             try
             {
-                response = await _httpClient.PutAsJsonAsync($"api/persons/{id}", personDTO).ConfigureAwait(false);
+                response = await _httpClient.PutAsJsonAsync($"api/person/{id}", personDTO).ConfigureAwait(false);
                 response.EnsureSuccessStatusCode();
                 return new OperationResult<string> { Succeeded = true, Data = await response.Content.ReadAsStringAsync() };
             }
@@ -128,7 +128,7 @@ namespace AJKAccessGuard.Services
             var response = new HttpResponseMessage();
             try
             {
-                response = await _httpClient.DeleteAsync($"api/persons/{id}").ConfigureAwait(false);
+                response = await _httpClient.DeleteAsync($"api/person/{id}").ConfigureAwait(false);
                 response.EnsureSuccessStatusCode();
                 return new OperationResult<string> { Succeeded = true, Data = await response.Content.ReadAsStringAsync() };
             }
