@@ -51,8 +51,8 @@ else
 <DeleteModal Data="deleteModalModel" Show="showDeleteComponent" Confirmed="ConfirmDeleteVehicle"/>
 
 @code {
-    private List<VehicleDTO> VehicleList = new List<VehicleDTO>();
-    private VehicleDTO vehicle = new VehicleDTO();
+    private List<VehicleDto> VehicleList = new List<VehicleDto>();
+    private VehicleDto vehicle = new VehicleDto();
     private bool isEditMode = false;
     private bool showVehicleComponent = false;
     private List<string> errors = new List<string>();
@@ -64,7 +64,7 @@ else
         await LoadVehicles();
     }
 
-    private void ShowDeleteVehicleModal(VehicleDTO selectedVehicle)
+    private void ShowDeleteVehicleModal(VehicleDto selectedVehicle)
     {
         vehicle = selectedVehicle;
         deleteModalModel.Title = "Usuń pojazd";
@@ -103,14 +103,14 @@ else
 
     private void CreateNewVehicle()
     {
-        vehicle = new VehicleDTO();
+        vehicle = new VehicleDto();
         isEditMode = false;
         showVehicleComponent = true;
     }
 
-    private void EditVehicle(VehicleDTO vehicle)
+    private void EditVehicle(VehicleDto vehicle)
     {
-        this.vehicle = new VehicleDTO
+        this.vehicle = new VehicleDto
         {
             Id = vehicle.Id,
             PlateNumber = vehicle.PlateNumber,
@@ -146,7 +146,7 @@ else
         }
     }
 
-    private async Task HandleSave(VehicleDTO vehicle)
+    private async Task HandleSave(VehicleDto vehicle)
     {
         errors.Clear();
 
@@ -179,7 +179,7 @@ else
         }
     }
 
-    private async Task HandleCreate(VehicleDTO vehicle)
+    private async Task HandleCreate(VehicleDto vehicle)
     {
         errors.Clear();
 

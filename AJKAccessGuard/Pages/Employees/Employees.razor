@@ -58,8 +58,8 @@ else
 
 
 @code {
-    private List<PersonDTO> EmployeeList = new List<PersonDTO>();
-    private PersonDTO person = new PersonDTO();
+    private List<PersonDto> EmployeeList = new List<PersonDto>();
+    private PersonDto person = new PersonDto();
     private bool isEditMode = false;
     private bool showEmployeeComponent = false;
     private List<string> errors = new List<string>();
@@ -70,7 +70,7 @@ else
     {
         await LoadEmployees();
     }
-    private void ShowDeletePersonModal(PersonDTO selectedPerson)
+    private void ShowDeletePersonModal(PersonDto selectedPerson)
     {
         person = selectedPerson;
         deleteModalModel.Title = "Usuń pracownika";
@@ -109,14 +109,14 @@ else
 
     private void CreateNewEmployee()
     {
-        person = new PersonDTO();
+        person = new PersonDto();
         isEditMode = false;
         showEmployeeComponent = true;
     }
 
-    private void EditEmployee(PersonDTO employee)
+    private void EditEmployee(PersonDto employee)
     {
-        person = new PersonDTO
+        person = new PersonDto
         {
             Id = employee.Id,
             FirstName = employee.FirstName,
@@ -150,7 +150,7 @@ else
         }
     }
 
-    private async Task HandleSave(PersonDTO employee)
+    private async Task HandleSave(PersonDto employee)
     {
         errors.Clear();
 
@@ -183,7 +183,7 @@ else
         }
     }
 
-    private async Task HandleCreate(PersonDTO employee)
+    private async Task HandleCreate(PersonDto employee)
     {
         errors.Clear();
 

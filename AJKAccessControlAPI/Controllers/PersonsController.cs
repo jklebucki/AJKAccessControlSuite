@@ -42,7 +42,7 @@ namespace AJKAccessControlAPI.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Admin, Supervisor, User")]
-        public async Task<IActionResult> AddPerson([FromBody] PersonDTO personDTO)
+        public async Task<IActionResult> AddPerson([FromBody] PersonDto personDTO)
         {
             var result = await _personService.AddAsync(personDTO);
             if (!result.Succeeded)
@@ -54,7 +54,7 @@ namespace AJKAccessControlAPI.Controllers
 
         [HttpPut("{id}")]
         [Authorize(Roles = "Admin, Supervisor, User")]
-        public async Task<IActionResult> UpdatePerson(int id, [FromBody] PersonDTO personDTO)
+        public async Task<IActionResult> UpdatePerson(int id, [FromBody] PersonDto personDTO)
         {
             if (id != personDTO.Id)
             {

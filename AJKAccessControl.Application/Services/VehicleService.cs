@@ -15,23 +15,23 @@ namespace AJKAccessControl.Application.Services
             _vehicleRepository = vehicleRepository;
         }
 
-        public async Task<OperationResult<VehicleDTO>> GetByIdAsync(int id)
+        public async Task<OperationResult<VehicleDto>> GetByIdAsync(int id)
         {
             var vehicle = await _vehicleRepository.GetByIdAsync(id);
             if (vehicle == null)
             {
-                return new OperationResult<VehicleDTO> { Succeeded = false, Errors = new List<string> { "Vehicle not found" } };
+                return new OperationResult<VehicleDto> { Succeeded = false, Errors = new List<string> { "Vehicle not found" } };
             }
-            return new OperationResult<VehicleDTO> { Succeeded = true, Data = MapToDTO(vehicle) };
+            return new OperationResult<VehicleDto> { Succeeded = true, Data = MapToDTO(vehicle) };
         }
 
-        public async Task<OperationResult<IEnumerable<VehicleDTO>>> GetAllAsync()
+        public async Task<OperationResult<IEnumerable<VehicleDto>>> GetAllAsync()
         {
             var vehicles = await _vehicleRepository.GetAllAsync();
-            return new OperationResult<IEnumerable<VehicleDTO>> { Succeeded = true, Data = vehicles.Select(MapToDTO) };
+            return new OperationResult<IEnumerable<VehicleDto>> { Succeeded = true, Data = vehicles.Select(MapToDTO) };
         }
 
-        public async Task<OperationResult<string>> AddAsync(VehicleDTO vehicleDTO)
+        public async Task<OperationResult<string>> AddAsync(VehicleDto vehicleDTO)
         {
             try
             {
@@ -45,7 +45,7 @@ namespace AJKAccessControl.Application.Services
             }
         }
 
-        public async Task<OperationResult<string>> UpdateAsync(VehicleDTO vehicleDTO)
+        public async Task<OperationResult<string>> UpdateAsync(VehicleDto vehicleDTO)
         {
             var vehicle = await _vehicleRepository.GetByIdAsync(vehicleDTO.Id);
             if (vehicle == null)
@@ -83,9 +83,9 @@ namespace AJKAccessControl.Application.Services
             return new OperationResult<string> { Succeeded = true, Data = "Vehicle deleted successfully" };
         }
 
-        private VehicleDTO MapToDTO(Vehicle vehicle)
+        private VehicleDto MapToDTO(Vehicle vehicle)
         {
-            return new VehicleDTO
+            return new VehicleDto
             {
                 Id = vehicle.Id,
                 PlateNumber = vehicle.PlateNumber,
@@ -98,7 +98,7 @@ namespace AJKAccessControl.Application.Services
             };
         }
 
-        private Vehicle MapToEntity(VehicleDTO vehicleDTO)
+        private Vehicle MapToEntity(VehicleDto vehicleDTO)
         {
             return new Vehicle
             {

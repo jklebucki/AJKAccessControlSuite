@@ -24,55 +24,55 @@ namespace AJKAccessGuard.Services
             _httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
         }
 
-        public async Task<OperationResult<VehicleDTO>> GetVehicleAsync(int id, string token)
+        public async Task<OperationResult<VehicleDto>> GetVehicleAsync(int id, string token)
         {
             SetAuthorizationHeader(token);
             try
             {
-                var vehicle = await _httpClient.GetFromJsonAsync<VehicleDTO>($"api/vehicles/{id}").ConfigureAwait(false);
+                var vehicle = await _httpClient.GetFromJsonAsync<VehicleDto>($"api/vehicles/{id}").ConfigureAwait(false);
                 if (vehicle == null)
                 {
                     throw new HttpRequestException("Vehicle not found.");
                 }
-                return new OperationResult<VehicleDTO> { Succeeded = true, Data = vehicle };
+                return new OperationResult<VehicleDto> { Succeeded = true, Data = vehicle };
             }
             catch (HttpRequestException ex)
             {
-                return new OperationResult<VehicleDTO> { Succeeded = false, Errors = [ex.InnerException?.Message ?? ex.Message] };
+                return new OperationResult<VehicleDto> { Succeeded = false, Errors = [ex.InnerException?.Message ?? ex.Message] };
             }
             catch (TaskCanceledException ex)
             {
-                return new OperationResult<VehicleDTO> { Succeeded = false, Errors = ["Request timed out.", ex.Message] };
+                return new OperationResult<VehicleDto> { Succeeded = false, Errors = ["Request timed out.", ex.Message] };
             }
             catch (Exception ex)
             {
-                return new OperationResult<VehicleDTO> { Succeeded = false, Errors = [ex.Message] };
+                return new OperationResult<VehicleDto> { Succeeded = false, Errors = [ex.Message] };
             }
         }
 
-        public async Task<OperationResult<IEnumerable<VehicleDTO>>> GetAllVehiclesAsync(string token)
+        public async Task<OperationResult<IEnumerable<VehicleDto>>> GetAllVehiclesAsync(string token)
         {
             SetAuthorizationHeader(token);
             try
             {
-                var vehicles = await _httpClient.GetFromJsonAsync<IEnumerable<VehicleDTO>>("api/vehicles").ConfigureAwait(false);
-                return new OperationResult<IEnumerable<VehicleDTO>> { Succeeded = true, Data = vehicles ?? Enumerable.Empty<VehicleDTO>() };
+                var vehicles = await _httpClient.GetFromJsonAsync<IEnumerable<VehicleDto>>("api/vehicles").ConfigureAwait(false);
+                return new OperationResult<IEnumerable<VehicleDto>> { Succeeded = true, Data = vehicles ?? Enumerable.Empty<VehicleDto>() };
             }
             catch (HttpRequestException ex)
             {
-                return new OperationResult<IEnumerable<VehicleDTO>> { Succeeded = false, Errors = [ex.InnerException?.Message ?? ex.Message] };
+                return new OperationResult<IEnumerable<VehicleDto>> { Succeeded = false, Errors = [ex.InnerException?.Message ?? ex.Message] };
             }
             catch (TaskCanceledException ex)
             {
-                return new OperationResult<IEnumerable<VehicleDTO>> { Succeeded = false, Errors = ["Request timed out.", ex.Message] };
+                return new OperationResult<IEnumerable<VehicleDto>> { Succeeded = false, Errors = ["Request timed out.", ex.Message] };
             }
             catch (Exception ex)
             {
-                return new OperationResult<IEnumerable<VehicleDTO>> { Succeeded = false, Errors = [ex.Message] };
+                return new OperationResult<IEnumerable<VehicleDto>> { Succeeded = false, Errors = [ex.Message] };
             }
         }
 
-        public async Task<OperationResult<string>> AddVehicleAsync(VehicleDTO vehicleDTO, string token)
+        public async Task<OperationResult<string>> AddVehicleAsync(VehicleDto vehicleDTO, string token)
         {
             SetAuthorizationHeader(token);
             var response = new HttpResponseMessage();
@@ -97,7 +97,7 @@ namespace AJKAccessGuard.Services
             }
         }
 
-        public async Task<OperationResult<string>> UpdateVehicleAsync(int id, VehicleDTO vehicleDTO, string token)
+        public async Task<OperationResult<string>> UpdateVehicleAsync(int id, VehicleDto vehicleDTO, string token)
         {
             SetAuthorizationHeader(token);
             var response = new HttpResponseMessage();

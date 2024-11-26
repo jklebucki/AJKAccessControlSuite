@@ -48,9 +48,9 @@
 </div>
 
 @code {
-    [Parameter] public VehicleDTO VehicleDto { get; set; } = new VehicleDTO();
-    [Parameter] public EventCallback<VehicleDTO> OnSave { get; set; }
-    [Parameter] public EventCallback<VehicleDTO> OnCreate { get; set; }
+    [Parameter] public VehicleDto VehicleDto { get; set; } = new VehicleDto();
+    [Parameter] public EventCallback<VehicleDto> OnSave { get; set; }
+    [Parameter] public EventCallback<VehicleDto> OnCreate { get; set; }
     [Parameter] public EventCallback OnCancel { get; set; }
     [Parameter] public bool IsEditMode { get; set; }
 

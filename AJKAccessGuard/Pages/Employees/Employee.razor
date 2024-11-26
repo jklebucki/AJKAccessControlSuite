@@ -49,9 +49,9 @@
 </div>
 
 @code {
-    [Parameter] public PersonDTO Person { get; set; } = new PersonDTO();
-    [Parameter] public EventCallback<PersonDTO> OnSave { get; set; }
-    [Parameter] public EventCallback<PersonDTO> OnCreate { get; set; }
+    [Parameter] public PersonDto Person { get; set; } = new PersonDto();
+    [Parameter] public EventCallback<PersonDto> OnSave { get; set; }
+    [Parameter] public EventCallback<PersonDto> OnCreate { get; set; }
     [Parameter] public EventCallback OnCancel { get; set; }
     [Parameter] public bool IsEditMode { get; set; }
 

@@ -5,10 +5,10 @@ namespace AJKAccessControl.Application.Services
 {
     public interface IPersonService
     {
-        Task<OperationResult<PersonDTO>> GetByIdAsync(int id);
-        Task<OperationResult<IEnumerable<PersonDTO>>> GetAllAsync();
-        Task<OperationResult<string>> AddAsync(PersonDTO personDTO);
-        Task<OperationResult<string>> UpdateAsync(PersonDTO personDTO);
+        Task<OperationResult<PersonDto>> GetByIdAsync(int id);
+        Task<OperationResult<IEnumerable<PersonDto>>> GetAllAsync();
+        Task<OperationResult<string>> AddAsync(PersonDto personDTO);
+        Task<OperationResult<string>> UpdateAsync(PersonDto personDTO);
         Task<OperationResult<string>> DeleteAsync(int id);
     }
 }

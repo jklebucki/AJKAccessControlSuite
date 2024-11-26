@@ -14,23 +14,23 @@ namespace AJKAccessControl.Application.Services
             _personRepository = personRepository;
         }
 
-        public async Task<OperationResult<PersonDTO>> GetByIdAsync(int id)
+        public async Task<OperationResult<PersonDto>> GetByIdAsync(int id)
         {
             var person = await _personRepository.GetByIdAsync(id);
             if (person == null)
             {
-                return new OperationResult<PersonDTO> { Succeeded = false, Errors = new List<string> { "Person not found" } };
+                return new OperationResult<PersonDto> { Succeeded = false, Errors = new List<string> { "Person not found" } };
             }
-            return new OperationResult<PersonDTO> { Succeeded = true, Data = MapToDTO(person) };
+            return new OperationResult<PersonDto> { Succeeded = true, Data = MapToDTO(person) };
         }
 
-        public async Task<OperationResult<IEnumerable<PersonDTO>>> GetAllAsync()
+        public async Task<OperationResult<IEnumerable<PersonDto>>> GetAllAsync()
         {
             var persons = await _personRepository.GetAllAsync();
-            return new OperationResult<IEnumerable<PersonDTO>> { Succeeded = true, Data = persons.Select(MapToDTO) };
+            return new OperationResult<IEnumerable<PersonDto>> { Succeeded = true, Data = persons.Select(MapToDTO) };
         }
 
-        public async Task<OperationResult<string>> AddAsync(PersonDTO personDTO)
+        public async Task<OperationResult<string>> AddAsync(PersonDto personDTO)
         {
             try
             {
@@ -44,7 +44,7 @@ namespace AJKAccessControl.Application.Services
             }
         }
 
-        public async Task<OperationResult<string>> UpdateAsync(PersonDTO personDTO)
+        public async Task<OperationResult<string>> UpdateAsync(PersonDto personDTO)
         {
             var person = await _personRepository.GetByIdAsync(personDTO.Id);
             if (person == null)
@@ -83,9 +83,9 @@ namespace AJKAccessControl.Application.Services
             return new OperationResult<string> { Succeeded = true, Data = "Person deleted successfully" };
         }
 
-        private PersonDTO MapToDTO(Person person)
+        private PersonDto MapToDTO(Person person)
         {
-            return new PersonDTO
+            return new PersonDto
             {
                 Id = person.Id,
                 FirstName = person.FirstName,
@@ -98,7 +98,7 @@ namespace AJKAccessControl.Application.Services
             };
         }
 
-        private Person MapToEntity(PersonDTO personDTO)
+        private Person MapToEntity(PersonDto personDTO)
         {
             return new Person
             {

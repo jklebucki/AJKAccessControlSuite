@@ -42,7 +42,7 @@ namespace AJKAccessControlAPI.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Admin, Supervisor, User")]
-        public async Task<IActionResult> AddVehicle([FromBody] VehicleDTO vehicleDTO)
+        public async Task<IActionResult> AddVehicle([FromBody] VehicleDto vehicleDTO)
         {
             var result = await _vehicleService.AddAsync(vehicleDTO);
             if (!result.Succeeded)
@@ -54,7 +54,7 @@ namespace AJKAccessControlAPI.Controllers
 
         [HttpPut("{id}")]
         [Authorize(Roles = "Admin, Supervisor, User")]
-        public async Task<IActionResult> UpdateVehicle(int id, [FromBody] VehicleDTO vehicleDTO)
+        public async Task<IActionResult> UpdateVehicle(int id, [FromBody] VehicleDto vehicleDTO)
         {
             if (id != vehicleDTO.Id)
             {

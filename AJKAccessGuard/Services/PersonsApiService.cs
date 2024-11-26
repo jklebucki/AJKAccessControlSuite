@@ -24,55 +24,55 @@ namespace AJKAccessGuard.Services
             _httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
         }
 
-        public async Task<OperationResult<PersonDTO>> GetPersonAsync(int id, string token)
+        public async Task<OperationResult<PersonDto>> GetPersonAsync(int id, string token)
         {
             SetAuthorizationHeader(token);
             try
             {
-                var person = await _httpClient.GetFromJsonAsync<PersonDTO>($"api/persons/{id}").ConfigureAwait(false);
+                var person = await _httpClient.GetFromJsonAsync<PersonDto>($"api/persons/{id}").ConfigureAwait(false);
                 if (person == null)
                 {
                     throw new HttpRequestException("Person not found.");
                 }
-                return new OperationResult<PersonDTO> { Succeeded = true, Data = person };
+                return new OperationResult<PersonDto> { Succeeded = true, Data = person };
             }
             catch (HttpRequestException ex)
             {
-                return new OperationResult<PersonDTO> { Succeeded = false, Errors = [ex.InnerException?.Message ?? ex.Message] };
+                return new OperationResult<PersonDto> { Succeeded = false, Errors = [ex.InnerException?.Message ?? ex.Message] };
             }
             catch (TaskCanceledException ex)
             {
-                return new OperationResult<PersonDTO> { Succeeded = false, Errors = ["Request timed out.", ex.Message] };
+                return new OperationResult<PersonDto> { Succeeded = false, Errors = ["Request timed out.", ex.Message] };
             }
             catch (Exception ex)
             {
-                return new OperationResult<PersonDTO> { Succeeded = false, Errors = [ex.Message] };
+                return new OperationResult<PersonDto> { Succeeded = false, Errors = [ex.Message] };
             }
         }
 
-        public async Task<OperationResult<IEnumerable<PersonDTO>>> GetAllPersonsAsync(string token)
+        public async Task<OperationResult<IEnumerable<PersonDto>>> GetAllPersonsAsync(string token)
         {
             SetAuthorizationHeader(token);
             try
             {
-                var persons = await _httpClient.GetFromJsonAsync<IEnumerable<PersonDTO>>("api/persons").ConfigureAwait(false);
-                return new OperationResult<IEnumerable<PersonDTO>> { Succeeded = true, Data = persons ?? Enumerable.Empty<PersonDTO>() };
+                var persons = await _httpClient.GetFromJsonAsync<IEnumerable<PersonDto>>("api/persons").ConfigureAwait(false);
+                return new OperationResult<IEnumerable<PersonDto>> { Succeeded = true, Data = persons ?? Enumerable.Empty<PersonDto>() };
             }
             catch (HttpRequestException ex)
             {
-                return new OperationResult<IEnumerable<PersonDTO>> { Succeeded = false, Errors = [ex.InnerException?.Message ?? ex.Message] };
+                return new OperationResult<IEnumerable<PersonDto>> { Succeeded = false, Errors = [ex.InnerException?.Message ?? ex.Message] };
             }
             catch (TaskCanceledException ex)
             {
-                return new OperationResult<IEnumerable<PersonDTO>> { Succeeded = false, Errors = ["Request timed out.", ex.Message] };
+                return new OperationResult<IEnumerable<PersonDto>> { Succeeded = false, Errors = ["Request timed out.", ex.Message] };
             }
             catch (Exception ex)
             {
-                return new OperationResult<IEnumerable<PersonDTO>> { Succeeded = false, Errors = [ex.Message] };
+                return new OperationResult<IEnumerable<PersonDto>> { Succeeded = false, Errors = [ex.Message] };
             }
         }
 
-        public async Task<OperationResult<string>> AddPersonAsync(PersonDTO personDTO, string token)
+        public async Task<OperationResult<string>> AddPersonAsync(PersonDto personDTO, string token)
         {
             SetAuthorizationHeader(token);
             var response = new HttpResponseMessage();
@@ -97,7 +97,7 @@ namespace AJKAccessGuard.Services
             }
         }
 
-        public async Task<OperationResult<string>> UpdatePersonAsync(int id, PersonDTO personDTO, string token)
+        public async Task<OperationResult<string>> UpdatePersonAsync(int id, PersonDto personDTO, string token)
         {
             SetAuthorizationHeader(token);
             var response = new HttpResponseMessage();

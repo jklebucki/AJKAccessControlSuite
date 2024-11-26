@@ -1,6 +1,6 @@
 ﻿namespace AJKAccessControl.Shared.DTOs
 {
-    public class PersonDTO
+    public class PersonDto
     {
         public int Id { get; set; }
         public string FirstName { get; set; } = string.Empty;
