@@ -22,7 +22,10 @@ namespace AJKAccessControl.Infrastructure.Data.Migrations
                     EntityType = table.Column<int>(type: "integer", nullable: false),
                     EntryTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     ExitTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    Description = table.Column<string>(type: "text", nullable: false)
+                    Description = table.Column<string>(type: "text", nullable: false),
+                    CreatedBy = table.Column<string>(type: "text", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
                 {
