@@ -1,0 +1,225 @@
+
+@page "/accessentries"
+@using AJKAccessControl.Shared.DTOs
+@using AJKAccessGuard.Pages.SharedComponents
+@using AJKAccessGuard.Services
+@inject IAccessEntriesApiService AccessEntriesApiService
+@inject IUserStorageService userStorage
+@inject NavigationManager Navigation
+@inject IJSRuntime JS
+
+@if (_showAccessEntryComponent)
+{
+    <AccessEntryForm OnCancel="Cancel" IsEditMode="isEditMode" AccessEntry="accessEntry" OnSave="HandleSave" OnCreate="HandleCreate" />
+}
+else
+{
+    <div class="centered-container mb-3 mt-3">
+        <h1 class="title-box">
+            Access Entries
+        </h1>
+    </div>
+    <button class="btn btn-outline-primary mb-3" @onclick="CreateNewAccessEntry">Add Access Entry</button>
+    <table class="table table-custom">
+        <thead>
+            <tr>
+                <th>Entity ID</th>
+                <th>Entity Type</th>
+                <th>Entry Time</th>
+                <th>Exit Time</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var entry in AccessEntryList)
+            {
+                <tr>
+                    <td>@entry.EntityId</td>
+                    <td>@entry.EntityType</td>
+                    <td>@entry.EntryTime</td>
+                    <td>@entry.ExitTime</td>
+                    <td>
+                        <button class="btn btn-outline-primary btn-sm" @onclick="() => EditAccessEntry(entry)">Edit</button>
+                        <button class="btn btn-outline-danger btn-sm" @onclick="() => ShowDeleteAccessEntryModal(entry)">Delete</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<Errors ErrorList="errors" />
+
+<DeleteModal Data="deleteModalModel" Show="showDeleteComponent" Confirmed="ConfirmDeleteAccessEntry"/>
+
+@code {
+    private List<AccessEntryDto> AccessEntryList = new List<AccessEntryDto>();
+    private AccessEntryDto accessEntry = new AccessEntryDto();
+    private bool isEditMode = false;
+    private bool _showAccessEntryComponent = false;
+    private List<string> errors = new List<string>();
+    private bool showDeleteComponent = false;
+    private DeleteModal.DeleteModalModel deleteModalModel = new DeleteModal.DeleteModalModel();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadAccessEntries();
+    }
+
+    private void ShowDeleteAccessEntryModal(AccessEntryDto selectedEntry)
+    {
+        accessEntry = selectedEntry;
+        deleteModalModel.Title = "Delete Access Entry";
+        deleteModalModel.Question = $"Are you sure you want to delete access entry for entity {accessEntry.EntityId}?";
+        showDeleteComponent = true;
+    }
+
+    private async Task ConfirmDeleteAccessEntry(bool deleteConfirmed)
+    {
+        if (deleteConfirmed)
+        {
+            await DeleteAccessEntry(accessEntry.Id);
+        }
+        showDeleteComponent = false;
+    }
+
+    private async Task LoadAccessEntries()
+    {
+        var token = await userStorage.GetTokenAsync();
+        if (string.IsNullOrEmpty(token))
+        {
+            errors.Add("Access denied. Please log in again.");
+            return;
+        }
+
+        var result = await AccessEntriesApiService.GetAllAccessEntriesAsync(token);
+        if (result.Succeeded)
+        {
+            AccessEntryList = result.Data!.ToList();
+        }
+        else
+        {
+            errors.AddRange(result.Errors);
+        }
+    }
+
+    private void CreateNewAccessEntry()
+    {
+        accessEntry = new AccessEntryDto();
+        isEditMode = false;
+        _showAccessEntryComponent = true;
+    }
+
+    private void EditAccessEntry(AccessEntryDto entry)
+    {
+        accessEntry = new AccessEntryDto
+        {
+            Id = entry.Id,
+            EntityId = entry.EntityId,
+            EntityType = entry.EntityType,
+            EntryTime = entry.EntryTime,
+            ExitTime = entry.ExitTime,
+            Description = entry.Description,
+            CreatedBy = entry.CreatedBy,
+            CreatedAt = entry.CreatedAt,
+            UpdatedAt = entry.UpdatedAt
+        };
+        isEditMode = true;
+        _showAccessEntryComponent = true;
+    }
+
+    private async Task DeleteAccessEntry(int id)
+    {
+        errors.Clear();
+
+        var token = await userStorage.GetTokenAsync();
+        if (string.IsNullOrEmpty(token))
+        {
+            errors.Add("Access denied. Please log in again.");
+            return;
+        }
+
+        var result = await AccessEntriesApiService.DeleteAccessEntryAsync(id, token);
+        if (result.Succeeded)
+        {
+            AccessEntryList = AccessEntryList.Where(e => e.Id != id).ToList();
+        }
+        else
+        {
+            errors.AddRange(result.Errors);
+        }
+    }
+
+    private async Task HandleSave(AccessEntryDto entry)
+    {
+        errors.Clear();
+
+        var token = await userStorage.GetTokenAsync();
+        if (string.IsNullOrEmpty(token))
+        {
+            errors.Add("Access denied. Please log in again.");
+            return;
+        }
+        try
+        {
+            var result = await AccessEntriesApiService.UpdateAccessEntryAsync(entry.Id, entry, token);
+            if (result.Succeeded)
+            {
+                var index = AccessEntryList.FindIndex(e => e.Id == entry.Id);
+                if (index != -1)
+                {
+                    AccessEntryList[index] = entry;
+                }
+                _showAccessEntryComponent = false;
+            }
+            else
+            {
+                errors.AddRange(result.Errors);
+            }
+        }
+        catch (Exception ex)
+        {
+            errors.Add(ex.Message);
+        }
+    }
+
+    private async Task HandleCreate(AccessEntryDto entry)
+    {
+        errors.Clear();
+
+        var token = await userStorage.GetTokenAsync();
+        if (string.IsNullOrEmpty(token))
+        {
+            errors.Add("Access denied. Please log in again.");
+            return;
+        }
+
+        var result = await AccessEntriesApiService.AddAccessEntryAsync(entry, token);
+        if (result.Succeeded)
+        {
+            var id = 0;
+            int.TryParse(result.Data, out id);
+            entry.Id = id;
+            if (id != 0)
+            {
+                AccessEntryList.Add(entry);
+            }
+            else
+            {
+                await LoadAccessEntries();
+            }
+
+            _showAccessEntryComponent = false;
+        }
+        else
+        {
+            errors.AddRange(result.Errors);
+        }
+    }
+
+    private void Cancel()
+    {
+        _showAccessEntryComponent = false;
+        errors.Clear();
+    }
+}

@@ -1,0 +1,84 @@
+
+@page "/accessentries/form"
+@using AJKAccessControl.Shared.DTOs
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components
+
+<div class="centered-container mb-3 mt-3">
+    <h1 class="title-box">
+        @(_IsEditMode ? "Edit Access Entry" : "Add Access Entry")
+    </h1>
+</div>
+<div class="form-600-container">
+    <EditForm Model="_AccessEntry" OnValidSubmit="HandleValidSubmit">
+        <DataAnnotationsValidator />
+        <ValidationSummary class="text-danger" />
+
+        <div class="mb-3 row">
+            <label for="entityId" class="col-sm-4 col-form-label">Entity ID</label>
+            <div class="col-sm-8">
+                <InputNumber id="entityId" class="form-control" @bind-Value="_AccessEntry.EntityId" />
+            </div>
+        </div>
+        <div class="mb-3 row">
+            <label for="entityType" class="col-sm-4 col-form-label">Entity Type</label>
+            <div class="col-sm-8">
+                <InputSelect id="entityType" class="form-control" @bind-Value="_AccessEntry.EntityType">
+                    <option value="Person">Person</option>
+                    <option value="Vehicle">Vehicle</option>
+                </InputSelect>
+            </div>
+        </div>
+        <div class="mb-3 row">
+            <label for="entryTime" class="col-sm-4 col-form-label">Entry Time</label>
+            <div class="col-sm-8">
+                <InputDate id="entryTime" class="form-control" @bind-Value="_AccessEntry.EntryTime" />
+            </div>
+        </div>
+        <div class="mb-3 row">
+            <label for="exitTime" class="col-sm-4 col-form-label">Exit Time</label>
+            <div class="col-sm-8">
+                <InputDate id="exitTime" class="form-control" @bind-Value="_AccessEntry.ExitTime" />
+            </div>
+        </div>
+        <div class="mb-3 row">
+            <label for="description" class="col-sm-4 col-form-label">Description</label>
+            <div class="col-sm-8">
+                <InputTextArea id="description" class="form-control" @bind-Value="_AccessEntry.Description" />
+            </div>
+        </div>
+
+        <div class="mb-3 row">
+            <div class="col-sm-4"></div>
+            <div class="col-sm-8">
+                <button type="submit" class="btn btn-outline-primary">@((_IsEditMode ? "Save" : "Add"))</button>
+                <button type="button" class="btn btn-outline-secondary" @onclick="Cancel">Cancel</button>
+            </div>
+        </div>
+    </EditForm>
+</div>
+
+@code {
+    [Parameter] public AccessEntryDto _AccessEntry { get; set; } = new AccessEntryDto();
+    [Parameter] public EventCallback<AccessEntryDto> _OnSave { get; set; }
+    [Parameter] public EventCallback<AccessEntryDto> _OnCreate { get; set; }
+    [Parameter] public EventCallback _OnCancel { get; set; }
+    [Parameter] public bool _IsEditMode { get; set; }
+
+    private async Task HandleValidSubmit()
+    {
+        if (_IsEditMode)
+        {
+            await _OnSave.InvokeAsync(_AccessEntry);
+        }
+        else
+        {
+            await _OnCreate.InvokeAsync(_AccessEntry);
+        }
+    }
+
+    private async Task Cancel()
+    {
+        await _OnCancel.InvokeAsync();
+    }
+}
