@@ -65,6 +65,8 @@ builder.Services.AddScoped<IPersonRepository, PersonRepository>();
 builder.Services.AddScoped<IPersonService, PersonService>();
 builder.Services.AddScoped<IVehicleRepository, VehicleRepository>();
 builder.Services.AddScoped<IVehicleService, VehicleService>();
+builder.Services.AddScoped<IAccessEntryRepository, AccessEntryRepository>();
+builder.Services.AddScoped<IAccessEntryService, AccessEntryService>();
 
 
 // Configure DbContext with PostgreSQL
