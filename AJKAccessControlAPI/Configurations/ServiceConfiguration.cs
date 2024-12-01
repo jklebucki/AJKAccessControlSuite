@@ -7,7 +7,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 
-namespace AJKAccessControlAPI.Configurations{
+namespace AJKAccessControlAPI.Configurations
+{
     public static class ServiceConfiguration
     {
         public static void Configure(IServiceCollection services, IConfiguration configuration)

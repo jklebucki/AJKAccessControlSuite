@@ -3,7 +3,8 @@ using AJKAccessControl.Infrastructure.Identity;
 using AJKAccessControlAPI.Middleware;
 using Microsoft.AspNetCore.Identity;
 
-namespace AJKAccessControlAPI.Configurations{
+namespace AJKAccessControlAPI.Configurations
+{
     public static class ConfigureWebApplication
     {
         public static async Task SeedData(WebApplication app)
